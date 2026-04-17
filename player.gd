@@ -180,4 +180,4 @@ func modify_energy(amount: int) -> void:
 	energy_changed.emit(current_energy, max_energy)
 
 func die() -> void:
-	get_tree().change_scene_to_file("res://Restart.tscn")
+	get_tree().change_scene_to_file("res://game_over_menu.tscn")

@@ -5,6 +5,8 @@
 [sub_resource type="Theme" id="Theme_rhts7"]
 default_font_size = 42
 
+[sub_resource type="Theme" id="Theme_06t4h"]
+
 [node name="Main Menu" type="Control" unique_id=1207744896]
 layout_mode = 3
 anchors_preset = 15
@@ -31,6 +33,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
 size_flags_stretch_ratio = 3.0
+theme = SubResource("Theme_06t4h")
 text = "Graj"
 
 [node name="Settings" type="Button" parent="VBoxContainer" unique_id=1609592347]

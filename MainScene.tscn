@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dwsje81uvyhsg" path="res://main_scene.gd" id="1_rpqi1"]
 [ext_resource type="PackedScene" uid="uid://cl25grr7o014x" path="res://placeholderobiekt.tscn" id="1_x4av3"]
 [ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player.tscn" id="2_rpqi1"]
-[ext_resource type="Script" path="res://ui.gd" id="5_rf2cd"]
+[ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://EnemySpawner.tscn" id="6_a814b"]
 
 [node name="MainScene" type="Node2D" unique_id=1237574894]
