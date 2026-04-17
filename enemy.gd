@@ -1,7 +1,7 @@
 extends Node2D
 
 # --- USTAWIENIA BAZOWE ---
-@export var speed: float = 120.0
+@export var speed: float = 150.0
 @export var stop_distance: float = 50.0 
 
 # --- USTAWIENIA ATAKU ---
@@ -18,6 +18,7 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 # --- EFEKTY ---
 # Upewnij się, że masz plik BloodParticles.tscn w tym samym folderze
 const BLOOD_SCENE = preload("res://BloodParticles.tscn")
+const BLOOD_STAIN_SCENE = preload("res://BloodPixels.tscn")
 
 # --- ZMIENNE POMOCNICZE ---
 var player: Node2D = null
@@ -67,59 +68,33 @@ func take_damage(amount: int, source_position: Vector2) -> void:
 	hp -= amount
 	print("Przeciwnik dostał! Zostało mu ", hp, " HP.")
 	
-	spawn_damage_number(abs(amount))
-	
-	# 1. Knockback (odrzucenie w przeciwnym kierunku do źródła ataku)
+	# 1. Knockback 
 	var push_direction = (global_position - source_position).normalized()
-	knockback_velocity = push_direction * 400.0 # 400 to siła odrzutu
+	knockback_velocity = push_direction * 400.0 
 	
-	# 2. Trzęsienie kamery u gracza (jeśli gracz ma tę funkcję)
+	# 2. Trzęsienie kamery u gracza
 	if is_instance_valid(player) and player.has_method("apply_camera_shake"):
 		player.apply_camera_shake(8.0) 
 		
-	# 3. Generowanie krwi
-	var blood = BLOOD_SCENE.instantiate()
-	blood.global_position = global_position 
-	get_parent().add_child(blood) 
+	# 3. Generowanie tryskającej krwi (Cząsteczki)
+	if BLOOD_SCENE:
+		var blood = BLOOD_SCENE.instantiate()
+		blood.global_position = global_position 
+		get_parent().add_child(blood) 
 	
-	# 4. Rozbłyśnięcie na biało (oznaka trafienia)
+	# --- NOWE: GENEROWANIE PLAMY NA PODŁODZE ---
+	if BLOOD_STAIN_SCENE:
+		var stain = BLOOD_STAIN_SCENE.instantiate()
+		stain.global_position = global_position
+		get_parent().add_child(stain)
+		
+	# 4. Rozbłyśnięcie na biało 
 	modulate = Color(5.0, 5.0, 5.0) 
 	get_tree().create_timer(0.1).timeout.connect(func(): modulate = Color.WHITE)
 	
 	# 5. Sprawdzenie, czy zginął
 	if hp <= 0:
 		die()
-
-func spawn_damage_number(damage_value: int) -> void:
-	var label = Label.new()
-	label.text = "-" + str(damage_value)
-	
-	# Stylizacja tekstu (kolor czerwony, pogrubienie i czarny obrys dla czytelności)
-	label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.2))
-	label.add_theme_font_size_override("font_size", 42)
-	label.add_theme_constant_override("outline_size", 12)
-	
-	# Losowa pozycja wokół gracza
-	var random_offset = Vector2(randf_range(-30, 30), randf_range(-40, -10))
-	label.global_position = global_position + random_offset
-	
-	# Z-Index, aby upewnić się, że tekst jest nad graczem/resztą gry
-	label.z_index = 10 
-	
-	# Ważne: dodajemy do głównego drzewa (rodzica gracza), aby napis nie ruszał się razem z graczem
-	get_parent().add_child(label)
-	
-	# Animacja za pomocą Tween (równoległa: unosi się i staje się przezroczysty)
-	var tween = label.create_tween()
-	tween.set_parallel(true)
-	
-	# Przesunięcie wyżej o 40 pikseli w 0.6 sekundy
-	tween.tween_property(label, "global_position:y", label.global_position.y - 40, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	# Zanikanie (kanał alpha) w 0.6 sekundy
-	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_ease(Tween.EASE_IN)
-	
-	# Po zakończeniu animacji usuwamy Label, żeby nie zaśmiecać pamięci
-	tween.chain().tween_callback(label.queue_free)
 
 func die() -> void:
 	print("Przeciwnik pokonany!")
