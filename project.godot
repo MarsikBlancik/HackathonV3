@@ -11,7 +11,6 @@ config_version=5
 [application]
 
 config/name="bullethell"
-run/main_scene="uid://b66jp2sqexfrp"
 run/main_scene="uid://doiyevgl84se0"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -19,10 +18,6 @@ config/icon="res://icon.svg"
 [dotnet]
 
 project/assembly_name="bullethell"
-
-[global_group]
-
-player=""
 
 [physics]
 
