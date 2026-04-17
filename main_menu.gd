@@ -12,7 +12,7 @@ func _ready() -> void:
 	
 
 func _play_pressed():
-	print("play")
+	get_tree().change_scene_to_file("res://Player.tscn")
 	
 func _settings_pressed():
 	print("settings")
