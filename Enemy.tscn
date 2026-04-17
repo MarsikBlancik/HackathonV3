@@ -3,17 +3,19 @@
 [ext_resource type="Script" uid="uid://dbaohr4cvad7" path="res://enemy.gd" id="1_s7bn3"]
 [ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="1_tt7e2"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_s7bn3"]
-radius = 66.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s7bn3"]
+size = Vector2(85, 85)
 
 [node name="Enemy" type="Node2D" unique_id=544428658]
 script = ExtResource("1_s7bn3")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=467901982]
 modulate = Color(0.94208246, 0, 0.5169437, 1)
+scale = Vector2(0.66235924, 0.66235924)
 texture = ExtResource("1_tt7e2")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=2034821217]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=279003386]
-shape = SubResource("CircleShape2D_s7bn3")
+position = Vector2(-0.5, 0.5)
+shape = SubResource("RectangleShape2D_s7bn3")
