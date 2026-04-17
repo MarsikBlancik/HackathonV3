@@ -5,7 +5,7 @@ signal hp_changed(current_hp: int, max_hp: int)
 signal energy_changed(current_energy: int, max_energy: int)
 
 # 2. MODUŁ STATYSTYK
-const BASE_STAT: int = 1 
+const BASE_STAT: int = 1
 
 @export var max_hp: int = BASE_STAT * 3
 @export var max_energy: int = BASE_STAT * 3
@@ -17,38 +17,34 @@ var energy_timer: float = 0.0
 
 # 3. MODUŁ RUCHU
 @export var speed: float = 200.0
-@export var dash_distance: float = 150.0 
-@export var dash_duration: float = 0.2    
+@export var dash_distance: float = 150.0
+@export var dash_duration: float = 0.2
 
 var is_dashing: bool = false
-var last_direction: Vector2 = Vector2.RIGHT 
+var last_direction: Vector2 = Vector2.RIGHT
 
+# Upewnij się, że stworzyłeś plik BloodParticles.tscn!
 const BLOOD_SCENE = preload("res://BloodParticles.tscn")
 
 # --- MODUŁ KAMERY (SHAKE) ---
 @onready var camera: Camera2D = $Camera2D
 
-var shake_strength: float = 0.0 # Aktualna siła trzęsienia
-@export var shake_decay: float = 10.0 # Jak szybko kamera wraca do normy (większa = szybciej)
+var shake_strength: float = 0.0
+@export var shake_decay: float = 10.0 
 
 # --- MODUŁ FIZYKI (KNOCKBACK) ---
 var knockback_velocity: Vector2 = Vector2.ZERO
-@export var knockback_friction: float = 10.0 # Jak szybko gracz odzyskuje kontrolę
+@export var knockback_friction: float = 10.0 
 
 func _ready() -> void:
-	# KULOODPORNA METODA: Gracz dodaje się do grupy "Player"
 	add_to_group("Player")
-	
 	current_hp = max_hp
 	current_energy = max_energy
-	
-	# Wysyłamy sygnał na start
 	hp_changed.emit(current_hp, max_hp)
 	energy_changed.emit(current_energy, max_energy)
-	
-	print("Gracz gotowy | HP: ", current_hp, " | Energia: ", current_energy)
 
 func _process(delta: float) -> void:
+	# Odnawianie energii
 	if current_energy < max_energy:
 		energy_timer += delta
 		if energy_timer >= energy_recharge_time:
@@ -57,38 +53,33 @@ func _process(delta: float) -> void:
 	else:
 		energy_timer = 0.0
 	
-	if is_dashing: return
-		
 	var input_direction = Vector2.ZERO
-	if Input.is_physical_key_pressed(KEY_D): input_direction.x += 1
-	if Input.is_physical_key_pressed(KEY_A): input_direction.x -= 1
-	if Input.is_physical_key_pressed(KEY_S): input_direction.y += 1
-	if Input.is_physical_key_pressed(KEY_W): input_direction.y -= 1
-		
-	if input_direction.length() > 0:
-		input_direction = input_direction.normalized()
-		last_direction = input_direction 
-		
-	# --- NOWE: RUCH I KNOCKBACK ---
-	# 1. Obliczanie zwykłego ruchu gracza
-	var move_velocity = input_direction * speed
+	var move_velocity = Vector2.ZERO
 	
-	# 2. Wygaszanie knockbacku (siła płynnie spada do zera)
+	# Zwykłe sterowanie działa tylko wtedy, gdy NIE używamy dasha
+	if not is_dashing:
+		if Input.is_physical_key_pressed(KEY_D): input_direction.x += 1
+		if Input.is_physical_key_pressed(KEY_A): input_direction.x -= 1
+		if Input.is_physical_key_pressed(KEY_S): input_direction.y += 1
+		if Input.is_physical_key_pressed(KEY_W): input_direction.y -= 1
+			
+		if input_direction.length() > 0:
+			input_direction = input_direction.normalized()
+			last_direction = input_direction
+			
+		move_velocity = input_direction * speed
+		
+	# --- RUCH I KNOCKBACK ---
+	# Wyliczane w każdej klatce, niezależnie od tego czy robisz dash, czy nie
 	knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_friction * delta)
-	
-	# 3. Zastosowanie obu sił (własny ruch + odrzut)
 	position += (move_velocity + knockback_velocity) * delta
 	
 	# --- LOGIKA TRZĘSIENIA KAMERY ---
 	if shake_strength > 0:
-		# Płynnie zmniejszamy siłę trzęsienia do zera
 		shake_strength = lerpf(shake_strength, 0.0, shake_decay * delta)
-		
-		# Losujemy przesunięcie (offset) w osi X i Y
 		var random_offset = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized()
 		camera.offset = random_offset * shake_strength
 		
-		# Kiedy siła jest już bliska zeru, zerujemy offset całkowicie
 		if shake_strength < 0.1:
 			shake_strength = 0.0
 			camera.offset = Vector2.ZERO
@@ -122,7 +113,7 @@ func perform_dash() -> void:
 func attack() -> void:
 	var mouse_pos = get_global_mouse_position()
 	var attack_direction = (mouse_pos - global_position).normalized()
-	var attack_distance = 45.0 
+	var attack_distance = 45.0
 	
 	var attack_area = Area2D.new()
 	attack_area.position = attack_direction * attack_distance
@@ -130,47 +121,63 @@ func attack() -> void:
 	
 	var collision_shape = CollisionShape2D.new()
 	var rect_shape = RectangleShape2D.new()
-	rect_shape.size = Vector2(30, 80) 
+	rect_shape.size = Vector2(30, 80)
 	collision_shape.shape = rect_shape
 	attack_area.add_child(collision_shape)
 	
 	var debug_rect = ColorRect.new()
 	debug_rect.color = Color(1.0, 0.0, 0.0, 0.5)
 	debug_rect.size = Vector2(30, 80)
-	debug_rect.position = Vector2(-15, -40) 
+	debug_rect.position = Vector2(-15, -40)
 	attack_area.add_child(debug_rect)
 	
-	# Wewnątrz funkcji attack() w player.gd, tam gdzie wykrywasz kolizję:
 	attack_area.area_entered.connect(func(area: Area2D):
 		var target = area.get_parent()
 		if target != null and target.has_method("take_damage"):
-		# Przekazujemy dodatkowo pozycję gracza (global_position)
-			target.take_damage(BASE_STAT * 1, global_position) 
+			target.take_damage(BASE_STAT * 1, global_position)
+			apply_hit_stop(0.1)
 	)
 	
 	add_child(attack_area)
 	get_tree().create_timer(0.2).timeout.connect(func(): attack_area.queue_free())
-	
-	# Nowa funkcja, którą możemy wywołać z dowolnego miejsca
+
+# --- FUNKCJE EFEKTÓW ---
 func apply_camera_shake(intensity: float) -> void:
 	shake_strength = intensity
 
+# --- MODUŁ ZAMROŻENIA CZASU (HIT STOP) ---
+func apply_hit_stop(duration: float) -> void:
+	# Całkowicie zatrzymujemy czas (0.0 zamiast 0.05)
+	Engine.time_scale = 0.0
+	
+	# Ostatni argument 'true' (ignore_time_scale) ratuje naszą grę!
+	# Dzięki niemu ten timer nadal odlicza w czasie rzeczywistym,
+	# mimo że cała gra jest zatrzymana.
+	await get_tree().create_timer(duration, true, false, true).timeout
+	
+	# Wracamy do normalności
+	Engine.time_scale = 1.0
+
+# --- MODYFIKATORY STATYSTYK ---
 func modify_hp(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 	current_hp = clampi(current_hp + amount, 0, max_hp)
 	hp_changed.emit(current_hp, max_hp)
 	
+	# Jeśli gracz dostał obrażenia:
 	if amount < 0:
-		apply_camera_shake(15.0) 
+		apply_camera_shake(15.0)
+		apply_hit_stop(0.15)
 		
-		# --- NOWE: ODRZUT GRACZA ---
-		# Jeśli znamy pozycję ataku (nie jest to domyślne zero), odpychamy gracza
+		# Odrzut (knockback)
 		if source_position != Vector2.ZERO:
 			var push_direction = (global_position - source_position).normalized()
-			knockback_velocity = push_direction * 500.0 # Gracz ma mocniejszy odrzut (500)
+			knockback_velocity = push_direction * 500.0
 		
-		var blood = BLOOD_SCENE.instantiate()
-		blood.global_position = global_position 
-		get_parent().add_child(blood)
+		# Sprawdzamy czy plik krwi na pewno istnieje, żeby nie zcrashować gry
+		if BLOOD_SCENE:
+			var blood = BLOOD_SCENE.instantiate()
+			blood.global_position = global_position
+			get_parent().add_child(blood)
 		
 	if current_hp <= 0:
 		die()
@@ -180,4 +187,5 @@ func modify_energy(amount: int) -> void:
 	energy_changed.emit(current_energy, max_energy)
 
 func die() -> void:
+	Engine.time_scale = 1.0 # Super ważne! Resetujemy czas przed restartem gry.
 	get_tree().change_scene_to_file("res://Restart.tscn")

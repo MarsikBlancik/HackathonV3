@@ -1,7 +1,7 @@
 extends Node2D
 
 # --- USTAWIENIA BAZOWE ---
-@export var speed: float = 120.0
+@export var speed: float = 150.0
 @export var stop_distance: float = 50.0 
 
 # --- USTAWIENIA ATAKU ---
