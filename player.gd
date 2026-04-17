@@ -23,8 +23,8 @@ var energy_timer: float = 0.0
 var is_dashing: bool = false
 var last_direction: Vector2 = Vector2.RIGHT
 
-# Upewnij się, że stworzyłeś plik BloodParticles.tscn!
 const BLOOD_SCENE = preload("res://BloodParticles.tscn")
+const BLOOD_STAIN_SCENE = preload("res://BloodPixels.tscn") # <--- DODAJ TĘ LINIJKĘ
 
 # --- MODUŁ KAMERY (SHAKE) ---
 @onready var camera: Camera2D = $Camera2D
@@ -166,18 +166,26 @@ func modify_hp(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 	# Jeśli gracz dostał obrażenia:
 	if amount < 0:
 		apply_camera_shake(15.0)
-		apply_hit_stop(0.15)
+		apply_hit_stop(0.08)
 		
 		# Odrzut (knockback)
 		if source_position != Vector2.ZERO:
 			var push_direction = (global_position - source_position).normalized()
 			knockback_velocity = push_direction * 500.0
 		
-		# Sprawdzamy czy plik krwi na pewno istnieje, żeby nie zcrashować gry
+		# Tryskająca krew (cząsteczki)
 		if BLOOD_SCENE:
 			var blood = BLOOD_SCENE.instantiate()
 			blood.global_position = global_position
 			get_parent().add_child(blood)
+			
+		# --- NOWE: PIKSELE KRWI NA PODŁODZE ---
+		if BLOOD_STAIN_SCENE:
+			var stain = BLOOD_STAIN_SCENE.instantiate()
+			# Małe przesunięcie, żeby krew nie pojawiała się idealnie na środku butów
+			var random_offset = Vector2(randf_range(-5, 5), randf_range(-5, 5))
+			stain.global_position = global_position + random_offset
+			get_parent().add_child(stain)
 		
 	if current_hp <= 0:
 		die()
