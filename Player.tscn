@@ -9,7 +9,7 @@ gradient = SubResource("Gradient_0rwas")
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kpjcp"]
 
-[node name="Node2D" type="Node2D" unique_id=56556000]
+[node name="Node2D" type="Node2D" unique_id=56556000 groups=["Player"]]
 script = ExtResource("1_xhfnw")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=570689020]
