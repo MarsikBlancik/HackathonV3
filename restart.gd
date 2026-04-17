@@ -1,14 +1,15 @@
 extends Control
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var restart = $VBoxContainer/Button
-	restart.pressed.connect(restart_pressed)
+	var BtnRestart = $VBoxContainer/Restart
+	var BtnMainMenu = $VBoxContainer/MainMenu
 	
-func restart_pressed():
+	BtnRestart.pressed.connect(_restart_pressed)
+	BtnMainMenu.pressed.connect(_main_menu_pressed)
+	
+func _restart_pressed():
 	get_tree().change_scene_to_file("res://MainScene.tscn")
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+	
+func _main_menu_pressed():
+	get_tree().change_scene_to_file("res://main_menu.tscn")
