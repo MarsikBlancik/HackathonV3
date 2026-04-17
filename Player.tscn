@@ -11,3 +11,26 @@ shape = SubResource("CircleShape2D_kpjcp")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1578250531]
 texture = ExtResource("1_xhfnw")
+[ext_resource type="Script" uid="uid://bgaf35s2lqp47" path="res://player.gd" id="1_xhfnw"]
+
+[sub_resource type="Gradient" id="Gradient_0rwas"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xhfnw"]
+gradient = SubResource("Gradient_0rwas")
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kpjcp"]
+
+[node name="Node2D" type="Node2D" unique_id=56556000]
+script = ExtResource("1_xhfnw")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=570689020]
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D" unique_id=1710960022]
+scale = Vector2(0.08203125, 29.749998)
+texture = SubResource("GradientTexture1D_xhfnw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=288467131]
+shape = SubResource("CapsuleShape2D_kpjcp")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1061501773]
+position_smoothing_enabled = true
