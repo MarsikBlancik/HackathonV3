@@ -112,6 +112,22 @@ func attack() -> void:
 	debug_rect.position = Vector2(-15, -40) 
 	attack_area.add_child(debug_rect)
 	
+	# ... (kod tworzenia debug_rect) ...
+	attack_area.add_child(debug_rect)
+	
+	# 4.5. WYKRYWANIE TRAFIEŃ
+	attack_area.area_entered.connect(func(area: Area2D):
+		# Zakładamy, że Area2D przeciwnika jest dzieckiem jego głównego węzła
+		var target = area.get_parent()
+		# Jeśli trafiony obiekt posiada funkcję "take_damage", wywołaj ją
+		if target != null and target.has_method("take_damage"):
+			target.take_damage(BASE_STAT * 1) # Zadajemy 1 punkt obrażeń
+	)
+	
+	# 5. Dodajemy atak do sceny (nie do gracza, żeby uderzenie "zostało w powietrzu" podczas ruchu)
+	get_tree().current_scene.add_child(attack_area)
+	# ... (reszta kodu) ...
+	
 	# 5. Dodajemy atak do sceny (nie do gracza, żeby uderzenie "zostało w powietrzu" podczas ruchu)
 	get_tree().current_scene.add_child(attack_area)
 	

@@ -7,6 +7,9 @@ extends Node2D
 @export var attack_damage: int = 1
 @export var attack_cooldown: float = 1.0 # Czas między atakami w sekundach
 
+# --- STATYSTYKI PRZECIWNIKA ---
+@export var hp: int = 3 # Ilość trafień potrzebnych do zabicia wroga
+
 var player: Node2D = null
 var time_since_last_attack: float = 0.0 # Licznik czasu
 
@@ -46,3 +49,19 @@ func perform_attack() -> void:
 		
 	# Zerujemy licznik czasu, żeby przeciwnik musiał znów poczekać na kolejny atak
 	time_since_last_attack = 0.0
+
+# --- NOWA FUNKCJA: OTRZYMYWANIE OBRAŻEŃ ---
+func take_damage(amount: int) -> void:
+	hp -= amount
+	print("Przeciwnik dostał! Zostało mu ", hp, " HP.")
+	
+	# Opcjonalnie: Zmiana koloru na ułamek sekundy (efekt trafienia)
+	modulate = Color(5.0, 5.0, 5.0) # Rozbłyśnięcie
+	get_tree().create_timer(0.1).timeout.connect(func(): modulate = Color.WHITE)
+	
+	if hp <= 0:
+		die()
+
+func die() -> void:
+	print("Przeciwnik pokonany!")
+	queue_free() # Usuwa przeciwnika ze sceny
