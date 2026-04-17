@@ -2,7 +2,10 @@
 
 [ext_resource type="Script" uid="uid://blvoq1x425oqq" path="res://restart.gd" id="1_w6t3f"]
 
-[node name="Restart" type="Control" unique_id=189769753]
+[sub_resource type="Theme" id="Theme_w6t3f"]
+default_font_size = 42
+
+[node name="game_over_menu" type="Control" unique_id=189769753]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,8 +28,19 @@ offset_bottom = 15.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Button" type="Button" parent="VBoxContainer" unique_id=690224825]
+[node name="Restart" type="Button" parent="VBoxContainer" unique_id=765637837]
+custom_minimum_size = Vector2(350, 125)
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_vertical = 10
+size_flags_stretch_ratio = 3.0
+theme = SubResource("Theme_w6t3f")
 text = "Restart"
+
+[node name="MainMenu" type="Button" parent="VBoxContainer" unique_id=1620779456]
+custom_minimum_size = Vector2(350, 125)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+theme = SubResource("Theme_w6t3f")
+text = "Menu Główne"

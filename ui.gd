@@ -4,8 +4,8 @@ extends CanvasLayer
 @onready var energy_bar = $EnergyBar
 
 # Pobieramy referencje do naszych nowych tekstów (upewnij się, że nazwy się zgadzają!)
-@onready var hp_label = $HPBar/HPLabel
-@onready var energy_label = $EnergyBar/EnergyLabel
+@onready var hp_label
+@onready var energy_label
 
 func _ready() -> void:
 	# Czekamy jedną klatkę, żeby upewnić się, że Player zdążył załadować się do gry
