@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="bullethell"
+run/main_scene="uid://d27w6lj4q4x8r"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/mode=3
 
 [dotnet]
 

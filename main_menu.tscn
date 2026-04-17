@@ -1,0 +1,48 @@
+[gd_scene format=3 uid="uid://d27w6lj4q4x8r"]
+
+[ext_resource type="Script" uid="uid://dt7248qh7uxqk" path="res://main_menu.gd" id="1_06t4h"]
+
+[sub_resource type="Theme" id="Theme_rhts7"]
+default_font_size = 42
+
+[node name="Main Menu" type="Control" unique_id=1207744896]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_rhts7")
+script = ExtResource("1_06t4h")
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1712937227]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Play" type="Button" parent="VBoxContainer" unique_id=98352751]
+custom_minimum_size = Vector2(350, 125)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+size_flags_stretch_ratio = 3.0
+text = "Graj"
+
+[node name="Settings" type="Button" parent="VBoxContainer" unique_id=1609592347]
+custom_minimum_size = Vector2(350, 125)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 10
+text = "Ustawienia"
+
+[node name="Quit" type="Button" parent="VBoxContainer" unique_id=688583771]
+custom_minimum_size = Vector2(350, 125)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Wyjdź"
