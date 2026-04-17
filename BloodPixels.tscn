@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://bfm51d0p6845h"]
+
+[ext_resource type="Script" uid="uid://6myeky3gtrtb" path="res://blood_pixels.gd" id="1_0asiq"]
+
+[node name="BloodPixels" type="Node2D" unique_id=1763316256]
+z_index = -1
+script = ExtResource("1_0asiq")

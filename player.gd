@@ -188,4 +188,4 @@ func modify_energy(amount: int) -> void:
 
 func die() -> void:
 	Engine.time_scale = 1.0 # Super ważne! Resetujemy czas przed restartem gry.
-	get_tree().change_scene_to_file("res://Restart.tscn")
+	get_tree().change_scene_to_file("res://game_over_menu.tscn")

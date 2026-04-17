@@ -18,6 +18,7 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 # --- EFEKTY ---
 # Upewnij się, że masz plik BloodParticles.tscn w tym samym folderze
 const BLOOD_SCENE = preload("res://BloodParticles.tscn")
+const BLOOD_STAIN_SCENE = preload("res://BloodPixels.tscn")
 
 # --- ZMIENNE POMOCNICZE ---
 var player: Node2D = null
@@ -67,20 +68,27 @@ func take_damage(amount: int, source_position: Vector2) -> void:
 	hp -= amount
 	print("Przeciwnik dostał! Zostało mu ", hp, " HP.")
 	
-	# 1. Knockback (odrzucenie w przeciwnym kierunku do źródła ataku)
+	# 1. Knockback 
 	var push_direction = (global_position - source_position).normalized()
-	knockback_velocity = push_direction * 400.0 # 400 to siła odrzutu
+	knockback_velocity = push_direction * 400.0 
 	
-	# 2. Trzęsienie kamery u gracza (jeśli gracz ma tę funkcję)
+	# 2. Trzęsienie kamery u gracza
 	if is_instance_valid(player) and player.has_method("apply_camera_shake"):
 		player.apply_camera_shake(8.0) 
 		
-	# 3. Generowanie krwi
-	var blood = BLOOD_SCENE.instantiate()
-	blood.global_position = global_position 
-	get_parent().add_child(blood) 
+	# 3. Generowanie tryskającej krwi (Cząsteczki)
+	if BLOOD_SCENE:
+		var blood = BLOOD_SCENE.instantiate()
+		blood.global_position = global_position 
+		get_parent().add_child(blood) 
 	
-	# 4. Rozbłyśnięcie na biało (oznaka trafienia)
+	# --- NOWE: GENEROWANIE PLAMY NA PODŁODZE ---
+	if BLOOD_STAIN_SCENE:
+		var stain = BLOOD_STAIN_SCENE.instantiate()
+		stain.global_position = global_position
+		get_parent().add_child(stain)
+		
+	# 4. Rozbłyśnięcie na biało 
 	modulate = Color(5.0, 5.0, 5.0) 
 	get_tree().create_timer(0.1).timeout.connect(func(): modulate = Color.WHITE)
 	
