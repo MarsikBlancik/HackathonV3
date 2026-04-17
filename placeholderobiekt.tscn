@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cl25grr7o014x"]
+
+[sub_resource type="Gradient" id="Gradient_8ndhh"]
+offsets = PackedFloat32Array(0, 0.021634616)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_kxfj0"]
+gradient = SubResource("Gradient_8ndhh")
+
+[node name="Node2D" type="Node2D" unique_id=1689513127]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=991731393]
+position = Vector2(102, 42)
+texture = SubResource("GradientTexture2D_kxfj0")
