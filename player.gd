@@ -23,6 +23,14 @@ var energy_timer: float = 0.0
 var is_dashing: bool = false
 var last_direction: Vector2 = Vector2.RIGHT 
 
+const BLOOD_SCENE = preload("res://BloodParticles.tscn")
+
+# --- MODUŁ KAMERY (SHAKE) ---
+@onready var camera: Camera2D = $Camera2D
+
+var shake_strength: float = 0.0 # Aktualna siła trzęsienia
+@export var shake_decay: float = 10.0 # Jak szybko kamera wraca do normy (większa = szybciej)
+
 func _ready() -> void:
 	# KULOODPORNA METODA: Gracz dodaje się do grupy "Player"
 	add_to_group("Player")
@@ -58,6 +66,20 @@ func _process(delta: float) -> void:
 		last_direction = input_direction 
 		
 	position += input_direction * speed * delta
+	
+	# --- LOGIKA TRZĘSIENIA KAMERY ---
+	if shake_strength > 0:
+		# Płynnie zmniejszamy siłę trzęsienia do zera
+		shake_strength = lerpf(shake_strength, 0.0, shake_decay * delta)
+		
+		# Losujemy przesunięcie (offset) w osi X i Y
+		var random_offset = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized()
+		camera.offset = random_offset * shake_strength
+		
+		# Kiedy siła jest już bliska zeru, zerujemy offset całkowicie
+		if shake_strength < 0.1:
+			shake_strength = 0.0
+			camera.offset = Vector2.ZERO
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
@@ -114,10 +136,24 @@ func attack() -> void:
 	
 	add_child(attack_area)
 	get_tree().create_timer(0.2).timeout.connect(func(): attack_area.queue_free())
+	
+	# Nowa funkcja, którą możemy wywołać z dowolnego miejsca
+func apply_camera_shake(intensity: float) -> void:
+	shake_strength = intensity
 
 func modify_hp(amount: int) -> void:
 	current_hp = clampi(current_hp + amount, 0, max_hp)
 	hp_changed.emit(current_hp, max_hp)
+	
+	# Jeśli amount jest na minusie (gracz dostał obrażenia)
+	if amount < 0:
+		apply_camera_shake(15.0) 
+		
+		# --- NOWE: DODAWANIE KRWI DLA GRACZA ---
+		var blood = BLOOD_SCENE.instantiate()
+		blood.global_position = global_position 
+		get_parent().add_child(blood)
+		
 	if current_hp <= 0:
 		die()
 

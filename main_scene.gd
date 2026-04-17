@@ -1,7 +1,7 @@
 extends Node2D
 
-@onready var player = $player
-@onready var ui = $UI
+@onready var player
+@onready var ui
 
 func _ready() -> void:
 	print("--- MAIN SCENE START ---")

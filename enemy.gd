@@ -1,5 +1,7 @@
 extends Node2D
 
+const BLOOD_SCENE = preload("res://BloodParticles.tscn")
+
 @export var speed: float = 120.0
 @export var stop_distance: float = 50.0 
 
@@ -51,12 +53,20 @@ func perform_attack() -> void:
 	time_since_last_attack = 0.0
 
 # --- NOWA FUNKCJA: OTRZYMYWANIE OBRAŻEŃ ---
+# --- OTRZYMYWANIE OBRAŻEŃ ---
 func take_damage(amount: int) -> void:
 	hp -= amount
 	print("Przeciwnik dostał! Zostało mu ", hp, " HP.")
 	
-	# Opcjonalnie: Zmiana koloru na ułamek sekundy (efekt trafienia)
-	modulate = Color(5.0, 5.0, 5.0) # Rozbłyśnięcie
+	if is_instance_valid(player) and player.has_method("apply_camera_shake"):
+		player.apply_camera_shake(8.0) 
+		
+	# --- NOWE: DODAWANIE KRWI ---
+	var blood = BLOOD_SCENE.instantiate()
+	blood.global_position = global_position # Krew pojawia się tam, gdzie wróg
+	get_parent().add_child(blood) # Dodajemy ją do mapy głównej
+	
+	modulate = Color(5.0, 5.0, 5.0)
 	get_tree().create_timer(0.1).timeout.connect(func(): modulate = Color.WHITE)
 	
 	if hp <= 0:
