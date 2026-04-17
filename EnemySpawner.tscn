@@ -2,10 +2,11 @@
 
 [ext_resource type="Script" uid="uid://c6ibekopxf3ki" path="res://enemy_spawner.gd" id="1_skt6m"]
 [ext_resource type="PackedScene" uid="uid://hxthfkggdh8n" path="res://Enemy.tscn" id="2_v140b"]
+[ext_resource type="PackedScene" uid="uid://xoulvym7le6k" path="res://RangedEnemy.tscn" id="3_v140b"]
 
 [node name="EnemySpawner" type="Node2D" unique_id=1982424048]
 script = ExtResource("1_skt6m")
-enemy_scene = ExtResource("2_v140b")
+enemy_scenes = Array[PackedScene]([ExtResource("2_v140b"), ExtResource("3_v140b")])
 
 [node name="Timer" type="Timer" parent="." unique_id=2033071450]
 wait_time = 2.0
