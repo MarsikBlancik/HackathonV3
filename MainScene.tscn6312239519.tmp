@@ -27,6 +27,7 @@ offset_bottom = 179.0
 max_value = 3.0
 step = 1.0
 value = 3.0
+fill_mode = 2
 
 [node name="EnergyBar" type="ProgressBar" parent="UI" unique_id=2052450923]
 offset_left = 158.0
@@ -36,4 +37,4 @@ offset_bottom = 91.0
 max_value = 3.0
 step = 1.0
 value = 3.0
-show_percentage = false
+fill_mode = 2
