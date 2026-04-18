@@ -1,6 +1,7 @@
 extends Node2D
 
 # --- USTAWIENIA BAZOWE ---
+@export var xp_gem_scene: PackedScene
 @export var speed: float = 150.0
 @export var stop_distance: float = 50.0 
 
@@ -131,6 +132,19 @@ func spawn_damage_number(damage_value: int) -> void:
 	# Po zakończeniu animacji usuwamy Label, żeby nie zaśmiecać pamięci
 	tween.chain().tween_callback(label.queue_free)
 
-func die() -> void:
-	print("Przeciwnik pokonany!")
-	queue_free()
+func die() -> void: # Możesz mieć tę funkcję pod inną nazwą, np. take_damage
+	
+	# --- Tworzenie diamencika ---
+	if xp_gem_scene != null:
+		var gem = xp_gem_scene.instantiate()
+		
+		# Ustawiamy pozycję diamencika dokładnie tam, gdzie zginął wróg
+		gem.global_position = global_position
+		
+		# KLUCZOWE: Dodajemy gem do głównej sceny, a nie do wroga!
+		# Używamy call_deferred, żeby silnik fizyczny Godota się nie zablokował
+		get_tree().current_scene.call_deferred("add_child", gem)
+	
+	# --- Koniec tworzenia ---
+	
+	queue_free() # Przeciwnik znika

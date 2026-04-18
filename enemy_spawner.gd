@@ -5,8 +5,8 @@ extends Node2D
 @export var offscreen_buffer: float = 100.0
 
 # --- USTAWIENIA TRUDNOŚCI ---
-@export var initial_spawn_time: float = 3.0 # Początkowy średni czas
-@export var min_spawn_time: float = 0.5     # Limit szybkości
+@export var initial_spawn_time: float = 1.0 # Początkowy średni czas
+@export var min_spawn_time: float = 1     # Limit szybkości
 @export var time_to_reach_limit: float = 300.0 # Ile sekund do limitu (300s = 5 minut)
 @export var variance: float = 0.5           # Losowe odchylenie (+/- 0.5s)
 
