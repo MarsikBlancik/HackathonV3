@@ -41,8 +41,8 @@ var current_velocity: Vector2 = Vector2.ZERO
 var time_since_last_attack: float = 100.0 # Startowo ustawione wysoko, żeby od razu móc uderzyć
 
 # EFEKTY
-const BLOOD_SCENE = preload("res://BloodParticles.tscn")
-const BLOOD_STAIN_SCENE = preload("res://BloodPixels.tscn") 
+const BLOOD_SCENE = preload("res://EyeCandy/BloodParticles.tscn")
+const BLOOD_STAIN_SCENE = preload("res://EyeCandy/BloodPixels.tscn") 
 
 var ghost_timer: Timer
 @onready var sprite: Sprite2D = $CharacterBody2D/Sprite2D 
@@ -319,7 +319,7 @@ func modify_energy(amount: int) -> void:
 func die() -> void:
 	Engine.time_scale = 1.0
 	# Używamy call_deferred, aby Godot spokojnie dokończył klatkę fizyki przed zmianą sceny
-	get_tree().call_deferred("change_scene_to_file", "res://game_over_menu.tscn")
+	get_tree().call_deferred("change_scene_to_file", "res://Menus/game_over_menu.tscn")
 	
 	# --- MODUŁ DOŚWIADCZENIA (XP) ---
 func gain_xp(amount: int) -> void:

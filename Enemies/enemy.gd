@@ -2,77 +2,74 @@ extends Node2D
 
 # --- USTAWIENIA BAZOWE ---
 @export var xp_gem_scene: PackedScene
-@export var speed: float = 80.0 # Strzelec jest wolniejszy
-@export var stop_distance: float = 250.0 # Zatrzymuje się dalej od gracza
+@export var speed: float = 150.0
+@export var stop_distance: float = 50.0 
 
 # --- USTAWIENIA ATAKU ---
-@export var attack_cooldown: float = 1.5 # Czas między strzałami
-@export var projectile_scene: PackedScene # Tu podepnij plik Projectile.tscn w Inspektorze!
+@export var attack_damage: int = 1
+@export var attack_cooldown: float = 1.0 # Czas między atakami
 
 # --- STATYSTYKI PRZECIWNIKA ---
-@export var hp: int = 2 # Strzelec jest zazwyczaj "bardziej miękki"
+@export var hp: int = 3 
 
 # --- FIZYKA (KNOCKBACK) ---
 var knockback_velocity: Vector2 = Vector2.ZERO
-@export var knockback_friction: float = 10.0 
+@export var knockback_friction: float = 10.0 # Jak szybko wróg się zatrzymuje
 
 # --- EFEKTY ---
-const BLOOD_SCENE = preload("res://BloodParticles.tscn")
+# Upewnij się, że masz plik BloodParticles.tscn w tym samym folderze
+const BLOOD_SCENE = preload("res://EyeCandy/BloodParticles.tscn")
+const BLOOD_STAIN_SCENE = preload("res://EyeCandy/BloodPixels.tscn")
 
 # --- ZMIENNE POMOCNICZE ---
 var player: Node2D = null
 var time_since_last_attack: float = 0.0
 
 func _ready() -> void:
+	add_to_group("Enemy")
+	
 	player = get_tree().get_first_node_in_group("Player")
 	
 	if player == null:
-		print("Błąd: RangedEnemy nie znalazł gracza na mapie!")
+		print("Błąd: Przeciwnik nie znalazł gracza na mapie!")
 
 func _process(delta: float) -> void:
 	if is_instance_valid(player):
 		var distance_to_player = global_position.distance_to(player.global_position)
 		var direction = (player.global_position - global_position).normalized()
 		
-		# 1. Obliczanie normalnego ruchu
+		# 1. Obliczanie normalnego ruchu (idzie w stronę gracza, jeśli jest za daleko)
 		var move_velocity = Vector2.ZERO
 		if distance_to_player > stop_distance:
 			move_velocity = direction * speed
 			
-		# 2. Wygaszanie knockbacku
+		# 2. Wygaszanie knockbacku (siła odrzutu płynnie spada do zera z powodu tarcia)
 		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_friction * delta)
 		
-		# 3. Poruszanie wroga
+		# 3. Poruszanie wroga (Ruch własny + ewentualna siła odrzutu)
 		global_position += (move_velocity + knockback_velocity) * delta
 			
 		# 4. Logika atakowania
 		time_since_last_attack += delta
 		
-		# Strzela, jeśli jest w miarę blisko swojej strefy zatrzymania
-		if distance_to_player <= stop_distance + 50.0:
+		# Bufor +5 pikseli, żeby na pewno zaatakował po zatrzymaniu się
+		if distance_to_player <= stop_distance + 5.0:
 			if time_since_last_attack >= attack_cooldown:
 				perform_attack()
 
 func perform_attack() -> void:
-	time_since_last_attack = 0.0
+	print("Przeciwnik: Uderzam gracza!")
 	
-	if projectile_scene != null:
-		var projectile = projectile_scene.instantiate()
-		# Dodajemy pocisk do sceny głównej
-		get_tree().current_scene.add_child(projectile)
+	if player.has_method("modify_hp"):
+		# PODAJEMY DRUGI ARGUMENT: global_position (pozycję przeciwnika)
+		player.modify_hp(-attack_damage, global_position)
 		
-		# Ustawiamy pocisk tam, gdzie wróg
-		projectile.global_position = global_position
-		
-		# Obliczamy kierunek i wysyłamy pocisk
-		var direction = (player.global_position - global_position).normalized()
-		projectile.set_direction(direction)
-	else:
-		print("BŁĄD: RangedEnemy nie ma przypisanej sceny pocisku!")
+	time_since_last_attack = 0.0
 
-# --- OTRZYMYWANIE OBRAŻEŃ (Z Twoimi efektami) ---
+# --- OTRZYMYWANIE OBRAŻEŃ ---
 func take_damage(amount: int, source_position: Vector2) -> void:
 	hp -= amount
+	print("Przeciwnik dostał! Zostało mu ", hp, " HP.")
 	
 	spawn_damage_number(abs(amount))
 	
@@ -80,16 +77,23 @@ func take_damage(amount: int, source_position: Vector2) -> void:
 	var push_direction = (global_position - source_position).normalized()
 	knockback_velocity = push_direction * 400.0 
 	
-	# 2. Trzęsienie kamery u gracza 
+	# 2. Trzęsienie kamery u gracza
 	if is_instance_valid(player) and player.has_method("apply_camera_shake"):
 		player.apply_camera_shake(8.0) 
 		
-	# 3. Generowanie krwi
-	var blood = BLOOD_SCENE.instantiate()
-	blood.global_position = global_position 
-	get_parent().add_child(blood) 
+	# 3. Generowanie tryskającej krwi (Cząsteczki)
+	if BLOOD_SCENE:
+		var blood = BLOOD_SCENE.instantiate()
+		blood.global_position = global_position 
+		get_parent().add_child(blood) 
 	
-	# 4. Rozbłyśnięcie na biało
+	# --- NOWE: GENEROWANIE PLAMY NA PODŁODZE ---
+	if BLOOD_STAIN_SCENE:
+		var stain = BLOOD_STAIN_SCENE.instantiate()
+		stain.global_position = global_position
+		get_parent().add_child(stain)
+		
+	# 4. Rozbłyśnięcie na biało 
 	modulate = Color(5.0, 5.0, 5.0) 
 	get_tree().create_timer(0.1).timeout.connect(func(): modulate = Color.WHITE)
 	

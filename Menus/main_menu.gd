@@ -12,7 +12,7 @@ func _ready() -> void:
 	
 
 func _play_pressed():
-	get_tree().change_scene_to_file("res://MainScene.tscn")
+	get_tree().change_scene_to_file("res://MainScene/MainScene.tscn")
 	
 func _settings_pressed():
 	print("settings")

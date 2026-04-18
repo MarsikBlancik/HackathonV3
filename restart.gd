@@ -9,7 +9,7 @@ func _ready() -> void:
 	BtnMainMenu.pressed.connect(_main_menu_pressed)
 	
 func _restart_pressed():
-	get_tree().change_scene_to_file("res://MainScene.tscn")
+	get_tree().change_scene_to_file("res://MainScene/MainScene.tscn")
 	
 func _main_menu_pressed():
-	get_tree().change_scene_to_file("res://main_menu.tscn")
+	get_tree().change_scene_to_file("res://Menus/main_menu.tscn")
