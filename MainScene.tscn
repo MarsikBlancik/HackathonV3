@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://EnemySpawner.tscn" id="6_a814b"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_a814b"]
+
 [node name="MainScene" type="Node2D" unique_id=1237574894]
 z_index = 1002
 script = ExtResource("1_rpqi1")
@@ -44,6 +46,14 @@ offset_top = 994.0
 offset_right = 1856.0
 offset_bottom = 1013.0
 size_flags_vertical = 8
-show_percentage = false
+
+[node name="LevelLabel" type="Label" parent="UI/XPBar" unique_id=796250840]
+layout_mode = 0
+offset_left = 860.0
+offset_top = -29.0
+offset_right = 992.0
+offset_bottom = -6.0
+text = "Poziom 1"
+label_settings = SubResource("LabelSettings_a814b")
 
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
