@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://4cmvyvpof3hp"]
+
+[ext_resource type="Script" uid="uid://cbxmc43ggedul" path="res://pipe_bomb.gd" id="1_gnlwr"]
+[ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="2_8q48f"]
+
+[node name="PipeBomb" type="Node2D" unique_id=1452108206]
+script = ExtResource("1_gnlwr")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=586821105]
+scale = Vector2(0.245, 0.245)
+texture = ExtResource("2_8q48f")

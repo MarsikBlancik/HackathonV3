@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://dn2jwrjjc4oci"]
+
+[ext_resource type="Script" uid="uid://ddy3bte6c1k5x" path="res://shrapnel.gd" id="1_ba1f3"]
+[ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="2_8iwon"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_i73n1"]
+radius = 3.0
+
+[node name="Shrapnel" type="Area2D" unique_id=376977418]
+collision_mask = 15
+script = ExtResource("1_ba1f3")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=149155056]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_8iwon")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=268136953]
+shape = SubResource("CircleShape2D_i73n1")

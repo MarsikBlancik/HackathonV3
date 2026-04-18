@@ -5,7 +5,8 @@ const MAX_TIER: int = 3
 var gadgets = {
 	"drones": 0,
 	"mines": 0,
-	"dash_ram": 0 # <--- Zmienione z dash_shield
+	"dash_ram": 0,
+	"pipe_bomb": 0 # <--- NOWOŚĆ
 }
 
 func get_upgrade_choices() -> Array:

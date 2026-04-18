@@ -10,6 +10,8 @@ signal show_upgrade_menu(choices: Array) # <--- NOWY SYGNAŁ
 const DRONE_SCENE = preload("res://Gadgets/Drone.tscn")
 const MINE_SCENE = preload("res://Mine.tscn")
 var mine_timer: Timer
+const PIPEBOMB_SCENE = preload("res://PipeBomb.tscn")
+var pipe_bomb_cooldown: float = 0.0
 
 # 2. MODUŁ STATYSTYK
 const BASE_STAT: int = 1
@@ -90,12 +92,20 @@ func _process(delta: float) -> void:
 	else:
 		energy_timer = 0.0
 		
-	# 2. Licznik czasu do ataku
+	# 2. Odliczanie cooldownów
 	time_since_last_attack += delta
+	if pipe_bomb_cooldown > 0:
+		pipe_bomb_cooldown -= delta
 	
-	# Jeśli włączony jest tryb Auto i minął czas odnowienia (delay) - atakuj!
-	if is_auto_attack and time_since_last_attack >= attack_cooldown:
-		perform_auto_attack()
+	# Jeśli włączony jest tryb Auto (klawisz T)
+	if is_auto_attack:
+		# Auto-Atak Mieczem
+		if time_since_last_attack >= attack_cooldown:
+			perform_auto_attack()
+			
+		# Auto-Rzut Granatem
+		if gadget_manager.gadgets["pipe_bomb"] > 0 and pipe_bomb_cooldown <= 0.0:
+			auto_throw_pipe_bomb()
 	
 	# 3. Ruch
 	var input_direction = Vector2.ZERO
@@ -142,10 +152,18 @@ func _input(event: InputEvent) -> void:
 			print("Tryb Auto-Ataku: ", "WŁĄCZONY" if is_auto_attack else "WYŁĄCZONY")
 			
 	if event is InputEventMouseButton and event.pressed:
+		
+		# --- LEWY KLIK: ATAK MIECZEM ---
 		if event.button_index == MOUSE_BUTTON_LEFT:
-			# MANUALNY ATAK (wymaga wyłączonego auto-ataku i załadowanego cooldownu)
 			if not is_auto_attack and time_since_last_attack >= attack_cooldown:
 				attack_towards(get_global_mouse_position())
+				
+		# --- PRAWY KLIK: GRANAT RUROWY ---
+		if event.button_index == MOUSE_BUTTON_RIGHT:
+			var bomb_tier = gadget_manager.gadgets["pipe_bomb"]
+			if bomb_tier > 0 and pipe_bomb_cooldown <= 0.0:
+				# Przekazujemy pozycję myszki jako cel!
+				throw_pipe_bomb(bomb_tier, get_global_mouse_position())
 
 # --- NOWOŚĆ: SZUKANIE NAJBLIŻSZEGO WROGA ---
 func perform_auto_attack() -> void:
@@ -451,3 +469,37 @@ func create_dash_ghost() -> void:
 	var tween = create_tween()
 	tween.tween_property(ghost, "modulate:a", 0.0, 0.3)
 	tween.finished.connect(ghost.queue_free)
+
+func throw_pipe_bomb(tier: int, target_pos: Vector2) -> void: # <--- DODANO target_pos
+	if not PIPEBOMB_SCENE: return
+	
+	match tier:
+		1: pipe_bomb_cooldown = 5.0
+		2: pipe_bomb_cooldown = 3.0
+		3: pipe_bomb_cooldown = 3.0
+		
+	var bomb = PIPEBOMB_SCENE.instantiate()
+	get_parent().add_child(bomb)
+	
+	# Zamiast szukać myszki, rzucamy w podany punkt!
+	bomb.throw_bomb(global_position, target_pos, tier)
+	
+func auto_throw_pipe_bomb() -> void:
+	var enemies = get_tree().get_nodes_in_group("Enemy")
+	if enemies.is_empty(): return
+	
+	var closest_enemy = null
+	var min_distance = 600.0 # Granat ma dużo większy zasięg auto-namierzania niż miecz!
+	
+	for enemy in enemies:
+		if not is_instance_valid(enemy): continue
+		
+		var dist = global_position.distance_to(enemy.global_position)
+		if dist < min_distance:
+			min_distance = dist
+			closest_enemy = enemy
+			
+	if closest_enemy != null:
+		var bomb_tier = gadget_manager.gadgets["pipe_bomb"]
+		# Rzucamy w pozycję namierzonego wroga!
+		throw_pipe_bomb(bomb_tier, closest_enemy.global_position)

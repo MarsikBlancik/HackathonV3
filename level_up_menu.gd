@@ -41,7 +41,8 @@ func get_gadget_display_name(gadget_name: String) -> String:
 	match gadget_name:
 		"drones": return "Bojowe Drony\n(Strzelają we wrogów)"
 		"mines": return "Wybuchowe Miny\n(Zostają na podłodze)"
-		"dash_ram": return "Taranowanie\n(Ranisz wrogów podczas uniku)" # <--- Zmienione
+		"dash_ram": return "Taranowanie\n(Ranisz wrogów podczas uniku)"
+		"pipe_bomb": return "Granat Rurowy\n(Prawy Przycisk Myszy)" # <--- NOWOŚĆ
 		_: return gadget_name
 
 func _on_choice_made(gadget_name: String) -> void:
