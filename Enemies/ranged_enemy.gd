@@ -24,6 +24,7 @@ var player: Node2D = null
 var time_since_last_attack: float = 0.0
 
 func _ready() -> void:
+	add_to_group("Enemy")
 	player = get_tree().get_first_node_in_group("Player")
 	
 	if player == null:

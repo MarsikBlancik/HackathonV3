@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://cngf8nmh5t75n"]
+
+[ext_resource type="Script" uid="uid://um1p7l3ak10d" path="res://drone_projectile.gd" id="1_7rlhy"]
+
+[sub_resource type="Gradient" id="Gradient_fkkvc"]
+colors = PackedColorArray(1, 0.7294118, 0.0627451, 1, 1, 0.7294118, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_n3mj5"]
+gradient = SubResource("Gradient_fkkvc")
+width = 8
+height = 2
+fill_from = Vector2(0.5521739, 0.43913043)
+fill_to = Vector2(0.50869566, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vaglv"]
+size = Vector2(8, 2)
+
+[node name="DroneProjectile" type="Area2D" unique_id=700777974]
+script = ExtResource("1_7rlhy")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=228077309]
+texture = SubResource("GradientTexture2D_n3mj5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1298284096]
+shape = SubResource("RectangleShape2D_vaglv")

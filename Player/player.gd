@@ -5,7 +5,11 @@ signal hp_changed(current_hp: int, max_hp: int)
 signal energy_changed(current_energy: int, max_energy: int)
 signal xp_changed(current_xp: int, max_xp: int) # <--- NOWE
 signal leveled_up(new_level: int) # <--- NOWE
+signal show_upgrade_menu(choices: Array) # <--- NOWY SYGNAŁ
 
+const DRONE_SCENE = preload("res://Gadgets/Drone.tscn")
+const MINE_SCENE = preload("res://Mine.tscn")
+var mine_timer: Timer
 
 # 2. MODUŁ STATYSTYK
 const BASE_STAT: int = 1
@@ -47,6 +51,7 @@ const BLOOD_STAIN_SCENE = preload("res://EyeCandy/BloodPixels.tscn")
 var ghost_timer: Timer
 @onready var sprite: Sprite2D = $CharacterBody2D/Sprite2D 
 @onready var camera: Camera2D = $Camera2D
+@onready var gadget_manager: Node = $GadgetManager # <--- NOWA REFERENCJA
 
 var shake_strength: float = 0.0
 @export var shake_decay: float = 10.0 
@@ -69,6 +74,11 @@ func _ready() -> void:
 	ghost_timer.wait_time = 0.03 
 	ghost_timer.timeout.connect(create_dash_ghost)
 	add_child(ghost_timer)
+	
+	# Tworzymy zegar, który będzie tykał w tle i zrzucał miny
+	mine_timer = Timer.new()
+	mine_timer.timeout.connect(_drop_mine)
+	add_child(mine_timer)
 
 func _process(delta: float) -> void:
 	# 1. Odnawianie energii
@@ -212,6 +222,43 @@ func perform_dash() -> void:
 	is_dashing = true
 	ghost_timer.start() 
 	
+	# --- NOWOŚĆ: GADŻET TARANOWANIA ---
+	var ram_tier = gadget_manager.gadgets["dash_ram"]
+	if ram_tier > 0:
+		var ram_area = Area2D.new()
+		
+		# 1. OTWIERAMY "OCZY" NASZEGO TARANU NA INNE WARSTWY
+		ram_area.collision_mask = 15 # Każe skanować wszystkie pierwsze 4 warstwy fizyki!
+		
+		var collision = CollisionShape2D.new()
+		var circle = CircleShape2D.new()
+		circle.radius = 30.0 + (ram_tier * 10.0) 
+		collision.shape = circle
+		ram_area.add_child(collision)
+		
+		var hit_enemies = []
+		
+		# 2. WYCIĄGAMY LOGIKĘ DO ZMIENNEJ, ŻEBY PODPIĄĆ JĄ POD CIAŁA I OBSZARY
+		var hit_logic = func(node: Node):
+			var target = node
+			if not target.has_method("take_damage") and target.get_parent() != null and target.get_parent().has_method("take_damage"):
+				target = target.get_parent()
+				
+			if target.is_in_group("Enemy") and target.has_method("take_damage") and not target in hit_enemies:
+				hit_enemies.append(target)
+				var ram_damage = ram_tier * 2 
+				target.take_damage(ram_damage, global_position)
+				apply_hit_stop(0.04) 
+		
+		# 3. PODPINAMY OBA TYPY DETEKCJI (Tak jak zrobiliśmy w minach)
+		ram_area.body_entered.connect(hit_logic)
+		ram_area.area_entered.connect(hit_logic)
+		
+		add_child(ram_area)
+		get_tree().create_timer(dash_duration).timeout.connect(ram_area.queue_free)
+	# -----------------------------------
+	
+	# Klasyczny lot dasha
 	var target_position = position + (last_direction * dash_distance)
 	var tween = create_tween()
 	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -221,24 +268,6 @@ func perform_dash() -> void:
 		is_dashing = false
 		ghost_timer.stop() 
 	)
-
-func create_dash_ghost() -> void:
-	var ghost = Sprite2D.new()
-	ghost.texture = sprite.texture
-	ghost.vframes = sprite.vframes
-	ghost.hframes = sprite.hframes
-	ghost.frame = sprite.frame
-	ghost.flip_h = sprite.flip_h
-	ghost.flip_v = sprite.flip_v
-	ghost.global_scale = sprite.global_scale
-	ghost.global_position = sprite.global_position
-	ghost.modulate = Color(0.2, 0.5, 1.0, 0.7)
-	
-	get_parent().add_child(ghost)
-	
-	var tween = create_tween()
-	tween.tween_property(ghost, "modulate:a", 0.0, 0.3)
-	tween.finished.connect(ghost.queue_free)
 
 func apply_camera_shake(intensity: float) -> void:
 	shake_strength = intensity
@@ -337,14 +366,88 @@ func gain_xp(amount: int) -> void:
 
 func level_up() -> void:
 	level += 1
-	# Zwiększamy wymagania na kolejny poziom (np. mnożymy przez 1.5)
+	# Zwiększamy wymagania na kolejny poziom
 	xp_to_next_level = int(xp_to_next_level * 1.5) 
 	
 	print("Awans! Jesteś na poziomie: ", level)
 	
-	# Opcjonalnie: nagroda za awans (np. leczenie do pełna)
 	current_hp = max_hp
 	hp_changed.emit(current_hp, max_hp)
-	
-	# Informujemy UI, żeby zmieniło tekst z numerem poziomu
 	leveled_up.emit(level)
+	
+	# --- NOWOŚĆ: LOGIKA WYBORU GADŻETÓW ---
+	# 1. Pobieramy 3 losowe opcje z naszego Mózgu
+	var upgrade_choices = gadget_manager.get_upgrade_choices()
+	
+	# 2. Zatrzymujemy całkowicie grę (żebyś w spokoju mógł wybrać)
+	get_tree().paused = true
+	
+	# 3. Wysyłamy sygnał w świat. Za chwilę podepniemy do niego nowe UI!
+	show_upgrade_menu.emit(upgrade_choices)
+	
+
+func update_gadgets():
+	var drone_tier = gadget_manager.gadgets["drones"]
+	var mine_tier = gadget_manager.gadgets["mines"]
+	
+	# --- 1. OBSŁUGA DRONÓW ---
+	for child in get_children():
+		if child.is_in_group("Drone"):
+			child.queue_free()
+			
+	for i in range(drone_tier):
+		var new_drone = DRONE_SCENE.instantiate()
+		new_drone.add_to_group("Drone")
+		add_child(new_drone)
+		new_drone.setup(drone_tier, (PI * 2 / drone_tier) * i)
+		
+	# --- 2. OBSŁUGA MIN ---
+	if mine_tier > 0:
+		match mine_tier:
+			1: mine_timer.wait_time = 3.0 # Co 3 sekundy
+			2: mine_timer.wait_time = 2.0 # Co 2 sekundy
+			3: mine_timer.wait_time = 1.0 # Maszyna do minowania!
+		
+		# Odpal stoper, jeśli jeszcze nie jest włączony
+		if mine_timer.is_stopped():
+			mine_timer.start()
+
+func _drop_mine():
+	var mine_tier = gadget_manager.gadgets["mines"]
+	if mine_tier == 0 or not MINE_SCENE: return
+	
+	var mine = MINE_SCENE.instantiate()
+	mine.global_position = global_position 
+	
+	match mine_tier:
+		1:
+			mine.damage = 2
+			mine.explosion_radius = 80.0
+		2:
+			mine.damage = 4
+			mine.explosion_radius = 120.0
+		3:
+			mine.damage = 8 
+			mine.explosion_radius = 180.0
+			
+	# POPRAWIONE SPAWNOWANIE MINY (zamiast current_scene)
+	get_parent().add_child(mine)
+
+# --- PRZYWRÓCONA FUNKCJA DUCHÓW ---
+func create_dash_ghost() -> void:
+	var ghost = Sprite2D.new()
+	ghost.texture = sprite.texture
+	ghost.vframes = sprite.vframes
+	ghost.hframes = sprite.hframes
+	ghost.frame = sprite.frame
+	ghost.flip_h = sprite.flip_h
+	ghost.flip_v = sprite.flip_v
+	ghost.global_scale = sprite.global_scale
+	ghost.global_position = sprite.global_position
+	ghost.modulate = Color(0.2, 0.5, 1.0, 0.7)
+	
+	get_parent().add_child(ghost)
+	
+	var tween = create_tween()
+	tween.tween_property(ghost, "modulate:a", 0.0, 0.3)
+	tween.finished.connect(ghost.queue_free)

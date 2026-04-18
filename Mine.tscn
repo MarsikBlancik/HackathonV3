@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dhcbj8ow5tcm"]
+
+[ext_resource type="Script" uid="uid://dja32viaqlmtf" path="res://mine.gd" id="1_evfvf"]
+
+[sub_resource type="Gradient" id="Gradient_evfvf"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rs2y7"]
+gradient = SubResource("Gradient_evfvf")
+width = 16
+height = 16
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rs2y7"]
+
+[node name="Mine" type="Area2D" unique_id=1508393341]
+collision_mask = 15
+script = ExtResource("1_evfvf")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1332725993]
+texture = SubResource("GradientTexture2D_rs2y7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1563737502]
+shape = SubResource("CircleShape2D_rs2y7")

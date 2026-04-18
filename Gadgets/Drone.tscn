@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cnyo2mnfjo40u"]
+
+[ext_resource type="Script" uid="uid://d3bdq6uqcvj7e" path="res://Gadgets/drone.gd" id="1_b0o8d"]
+[ext_resource type="Texture2D" uid="uid://lhfx3jkf0rou" path="res://Assets/Adobe Express - file (2).png" id="2_al18f"]
+
+[node name="Drone" type="Node2D" unique_id=825760604]
+script = ExtResource("1_b0o8d")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=870547063]
+texture_filter = 1
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("2_al18f")
+
+[node name="ShootTimer" type="Timer" parent="." unique_id=744383693]

@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://conxxkjs4hhsj"]
 
-[ext_resource type="Script" uid="uid://bgaf35s2lqp47" path="res://player.gd" id="1_xhfnw"]
+[ext_resource type="Script" uid="uid://bgaf35s2lqp47" path="res://Player/player.gd" id="1_xhfnw"]
+[ext_resource type="Script" uid="uid://hkfv6afvt4pg" path="res://Player/gadget_manager.gd" id="2_q3lat"]
 
 [sub_resource type="Gradient" id="Gradient_0rwas"]
 
@@ -23,3 +24,6 @@ shape = SubResource("CapsuleShape2D_kpjcp")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1061501773]
 position_smoothing_enabled = true
+
+[node name="GadgetManager" type="Node" parent="." unique_id=528365163]
+script = ExtResource("2_q3lat")

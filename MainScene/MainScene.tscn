@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player/Player.tscn" id="2_rpqi1"]
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://dsiigcnxays1n" path="res://Menus/pause_menu.tscn" id="6_5crlr"]
+[ext_resource type="PackedScene" uid="uid://cbko0hhof8aom" path="res://LevelUpMenu.tscn" id="6_431t1"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_a814b"]
@@ -62,5 +63,7 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 metadata/_edit_use_anchors_ = true
+
+[node name="LevelUpMenu" parent="UI" unique_id=1953657605 instance=ExtResource("6_431t1")]
 
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
