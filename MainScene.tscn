@@ -2,12 +2,15 @@
 
 [ext_resource type="Script" uid="uid://dwsje81uvyhsg" path="res://main_scene.gd" id="1_rpqi1"]
 [ext_resource type="PackedScene" uid="uid://cl25grr7o014x" path="res://placeholderobiekt.tscn" id="1_x4av3"]
+[ext_resource type="PackedScene" uid="uid://dff7ow4nfmpvf" path="res://XP_Gem.tscn" id="2_a814b"]
 [ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player.tscn" id="2_rpqi1"]
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://EnemySpawner.tscn" id="6_a814b"]
 
 [node name="MainScene" type="Node2D" unique_id=1237574894]
+z_index = 1002
 script = ExtResource("1_rpqi1")
+xp_gem_scene = ExtResource("2_a814b")
 
 [node name="Node2D" parent="." unique_id=1689513127 instance=ExtResource("1_x4av3")]
 
@@ -33,6 +36,14 @@ offset_bottom = 91.0
 max_value = 3.0
 step = 1.0
 value = 3.0
+show_percentage = false
+
+[node name="XPBar" type="ProgressBar" parent="UI" unique_id=232814027]
+offset_left = 56.0
+offset_top = 994.0
+offset_right = 1856.0
+offset_bottom = 1013.0
+size_flags_vertical = 8
 show_percentage = false
 
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]

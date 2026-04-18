@@ -44,3 +44,8 @@ func update_energy(current: int, max_val: int) -> void:
 	# Aktualizujemy tekst na pasku (np. "3 / 3")
 	if energy_label:
 		energy_label.text = str(current) + " / " + str(max_val)
+func update_xp(current_xp: int, max_xp: int) -> void:
+	# Zakładając, że Twój pasek nazywa się XPBar
+	if has_node("XPBar"):
+		$XPBar.max_value = max_xp
+		$XPBar.value = current_xp
