@@ -7,7 +7,14 @@ extends Area2D
 var direction: Vector2 = Vector2.ZERO
 var is_parried: bool = false
 
+# --- NOWE: Węzeł animacji ---
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+
 func _ready() -> void:
+	# Odpalenie animacji zaraz po pojawieniu się na scenie
+	if animated_sprite:
+		animated_sprite.play("default")
+		
 	# Usuń pocisk po 4 sekundach, żeby nie leciał w nieskończoność
 	get_tree().create_timer(4.0).timeout.connect(queue_free)
 	
@@ -17,6 +24,7 @@ func _ready() -> void:
 
 func set_direction(dir: Vector2) -> void:
 	direction = dir
+	# Zwrócenie pocisku w stronę, w którą leci
 	rotation = dir.angle()
 
 func _process(delta: float) -> void:
@@ -25,12 +33,12 @@ func _process(delta: float) -> void:
 func _on_body_entered(body: Node) -> void:
 	var target = body
 	
-	# --- NOWOŚĆ: SZUKANIE RODZICA ---
-	# Jeśli trafiliśmy w ciało fizyczne, ale to jego rodzic ma statystyki (tak jak u Twojego gracza)
+	# --- SZUKANIE RODZICA ---
+	# Jeśli trafiliśmy w ciało fizyczne, ale to jego rodzic ma statystyki
 	if not target.has_method("modify_hp") and target.get_parent() != null and target.get_parent().has_method("modify_hp"):
 		target = target.get_parent()
 		
-	# To samo zabezpieczenie dla wrogów (na przyszłość)
+	# To samo zabezpieczenie dla wrogów
 	if not target.has_method("take_damage") and target.get_parent() != null and target.get_parent().has_method("take_damage"):
 		target = target.get_parent()
 
@@ -60,6 +68,8 @@ func parry(new_direction: Vector2) -> void:
 		print("Pocisk sparowany!")
 		is_parried = true
 		direction = new_direction 
+		# --- NOWE: Po odbiciu aktualizujemy też rotację pocisku, by leciał w nową stronę ---
+		rotation = direction.angle() 
 		speed *= 1.5 
 		
 		# Zmiana koloru na zielony, jako wskaźnik odbicia

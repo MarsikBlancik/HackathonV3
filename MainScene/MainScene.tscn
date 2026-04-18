@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://dsiigcnxays1n" path="res://Menus/pause_menu.tscn" id="6_5crlr"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
+[ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_a814b"]
 
@@ -64,3 +65,11 @@ anchor_bottom = 0.5
 metadata/_edit_use_anchors_ = true
 
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=914282549]
+offset_left = -69593.0
+offset_top = -61385.0
+offset_right = 61798.0
+offset_bottom = 42662.313
+texture = ExtResource("7_431t1")
+stretch_mode = 1

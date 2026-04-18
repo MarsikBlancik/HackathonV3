@@ -1,26 +1,100 @@
 [gd_scene format=3 uid="uid://xoulvym7le6k"]
 
-[ext_resource type="Script" uid="uid://c5hd6u8pnjfsn" path="res://ranged_enemy.gd" id="1_o20mk"]
-[ext_resource type="PackedScene" uid="uid://dff7ow4nfmpvf" path="res://XP_Gem.tscn" id="2_8ir81"]
-[ext_resource type="PackedScene" uid="uid://cr1l6cs510xaf" path="res://Projectile.tscn" id="2_smfiu"]
-[ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="2_vqnxx"]
+[ext_resource type="Script" uid="uid://c5hd6u8pnjfsn" path="res://Enemies/ranged_enemy.gd" id="1_o20mk"]
+[ext_resource type="PackedScene" uid="uid://dff7ow4nfmpvf" path="res://XP/XP_Gem.tscn" id="2_8ir81"]
+[ext_resource type="PackedScene" uid="uid://cr1l6cs510xaf" path="res://Projectiles/Projectile.tscn" id="2_smfiu"]
+[ext_resource type="Texture2D" uid="uid://c0woypw8mahg2" path="res://Enemies/RangedZombie/RangedZombie-Photoroom.png" id="5_ytok2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_smfiu"]
-size = Vector2(85, 85)
+size = Vector2(90, 120)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xde2i"]
+atlas = ExtResource("5_ytok2")
+region = Rect2(0, 510, 327, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4a7lu"]
+atlas = ExtResource("5_ytok2")
+region = Rect2(327, 510, 327, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_64pht"]
+atlas = ExtResource("5_ytok2")
+region = Rect2(0, 30, 327, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gpovj"]
+atlas = ExtResource("5_ytok2")
+region = Rect2(348, 30, 206, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fo74e"]
+atlas = ExtResource("5_ytok2")
+region = Rect2(760, 30, 206, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k8o6r"]
+atlas = ExtResource("5_ytok2")
+region = Rect2(554, 30, 206, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ocdlg"]
+atlas = ExtResource("5_ytok2")
+region = Rect2(966, 30, 206, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ytok2"]
+atlas = ExtResource("5_ytok2")
+region = Rect2(738, 270, 246, 240)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_goaj7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xde2i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4a7lu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_64pht")
+}],
+"loop": false,
+"name": &"Attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gpovj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fo74e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k8o6r")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ocdlg")
+}],
+"loop": true,
+"name": &"Walk",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ytok2")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="RangedEnemy" type="Node2D" unique_id=513809056]
-modulate = Color(0.46080607, 0.70813626, 3.85046e-07, 1)
 script = ExtResource("1_o20mk")
 xp_gem_scene = ExtResource("2_8ir81")
 projectile_scene = ExtResource("2_smfiu")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1195580192]
-modulate = Color(0.94208246, 0, 0.5169437, 1)
-scale = Vector2(0.66235924, 0.66235924)
-texture = ExtResource("2_vqnxx")
-
 [node name="Hitbox" type="Area2D" parent="." unique_id=519956906]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=2107562233]
-position = Vector2(-0.5, 0.5)
+position = Vector2(2, 3)
 shape = SubResource("RectangleShape2D_smfiu")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=680602024]
+scale = Vector2(0.6, 0.6)
+sprite_frames = SubResource("SpriteFrames_goaj7")
+animation = &"Walk"
+frame_progress = 0.25782487

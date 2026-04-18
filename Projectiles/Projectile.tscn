@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cr1l6cs510xaf"]
 
-[ext_resource type="Script" uid="uid://bgfoprfx8eugj" path="res://projectile.gd" id="1_t7eop"]
+[ext_resource type="Script" uid="uid://bgfoprfx8eugj" path="res://Projectiles/projectile.gd" id="1_t7eop"]
+[ext_resource type="Texture2D" uid="uid://c0woypw8mahg2" path="res://Enemies/RangedZombie/RangedZombie-Photoroom.png" id="2_i710n"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_t7eop"]
 
@@ -9,6 +10,28 @@
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_e7peq"]
 gradient = SubResource("Gradient_t7eop")
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_eje5u"]
+atlas = ExtResource("2_i710n")
+region = Rect2(964, 510, 137, 240)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7r3kl"]
+atlas = ExtResource("2_i710n")
+region = Rect2(1101, 510, 137, 240)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lgxlk"]
+animations = [{
+"frames": [{
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_eje5u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7r3kl")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="Projectile" type="Area2D" unique_id=428080352]
 script = ExtResource("1_t7eop")
 
@@ -16,5 +39,12 @@ script = ExtResource("1_t7eop")
 shape = SubResource("CircleShape2D_t7eop")
 
 [node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=1534790379]
+visible = false
 scale = Vector2(0.3, 0.3)
 texture = SubResource("GradientTexture2D_e7peq")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=620582010]
+scale = Vector2(0.6, 0.6)
+sprite_frames = SubResource("SpriteFrames_lgxlk")
+frame = 1
+frame_progress = 1.0
