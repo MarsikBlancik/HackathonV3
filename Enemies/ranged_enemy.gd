@@ -4,6 +4,7 @@ extends Node2D
 @export var xp_gem_scene: PackedScene
 @export var speed: float = 80.0 # Strzelec jest wolniejszy
 @export var stop_distance: float = 250.0 # Zatrzymuje się dalej od gracza
+@export var coin_scene: PackedScene
 
 # --- USTAWIENIA ATAKU ---
 @export var attack_cooldown: float = 1.5 # Czas między strzałami
@@ -148,13 +149,23 @@ func spawn_damage_number(damage_value: int) -> void:
 	tween.chain().tween_callback(label.queue_free)
 
 func die() -> void: 
-	
+	# Wyrzucanie XP
 	if xp_gem_scene != null:
 		var gem = xp_gem_scene.instantiate()
 		gem.global_position = global_position
 		get_tree().current_scene.call_deferred("add_child", gem)
+		
+	# --- NOWE: Wyrzucanie od 1 do 3 monet ---
+	if coin_scene != null:
+		var coin_count = randi_range(1, 3)
+		for i in range(coin_count):
+			var coin = coin_scene.instantiate()
+			# Losowe przesunięcie, żeby monety nie leżały idealnie na sobie
+			var random_offset = Vector2(randf_range(-15, 15), randf_range(-15, 15))
+			coin.global_position = global_position + random_offset
+			get_tree().current_scene.call_deferred("add_child", coin)
 	
-	queue_free() 
+	queue_free()
 
 # --- NOWE: Resetowanie ataku po zakończeniu animacji ---
 func _on_animation_finished() -> void:

@@ -5,7 +5,7 @@ signal hp_changed(current_hp: int, max_hp: int)
 signal energy_changed(current_energy: int, max_energy: int)
 signal xp_changed(current_xp: int, max_xp: int) 
 signal leveled_up(new_level: int) 
-
+signal coins_changed(current_coins: int)
 
 # 2. MODUŁ STATYSTYK
 const BASE_STAT: int = 1
@@ -22,6 +22,8 @@ var xp_to_next_level: int = 5
 var current_hp: int
 var current_energy: int
 var energy_timer: float = 0.0
+
+var coins: int = 0
 
 # 3. MODUŁ RUCHU
 @export var speed: float = 200.0
@@ -410,6 +412,11 @@ func level_up() -> void:
 	hp_changed.emit(current_hp, max_hp)
 	
 	leveled_up.emit(level)
+	
+func gain_coins(amount: int) -> void:
+	coins += amount
+	print("Zebrano monety! Masz teraz: ", coins)
+	coins_changed.emit(coins)
 
 # --- Resetuje stan akcji po zakończeniu animacji ---
 func _on_animation_finished() -> void:

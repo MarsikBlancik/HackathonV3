@@ -64,6 +64,17 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 metadata/_edit_use_anchors_ = true
 
+[node name="CoinLabel" type="Label" parent="UI" unique_id=1352267754]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -182.0
+offset_bottom = 62.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=914282549]
