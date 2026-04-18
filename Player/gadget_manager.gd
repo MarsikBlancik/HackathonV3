@@ -6,7 +6,8 @@ var gadgets = {
 	"drones": 0,
 	"mines": 0,
 	"dash_ram": 0,
-	"pipe_bomb": 0 # <--- NOWOŚĆ
+	"pipe_bomb": 0, # <--- NOWOŚĆ
+	"molotov": 0
 }
 
 func get_upgrade_choices() -> Array:

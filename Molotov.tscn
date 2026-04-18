@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://b316j0835jcxb"]
+
+[ext_resource type="Script" uid="uid://ce1g2oms8womm" path="res://molotov.gd" id="1_8w0q2"]
+[ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="2_hkdfk"]
+
+[node name="Molotov" type="Node2D" unique_id=1447554999]
+script = ExtResource("1_8w0q2")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1249438581]
+scale = Vector2(0.24785736, 0.24785736)
+texture = ExtResource("2_hkdfk")

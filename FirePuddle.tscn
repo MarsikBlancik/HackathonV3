@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bh01vvvce3gej"]
+
+[ext_resource type="Script" uid="uid://ggnvtutq8smk" path="res://fire_puddle.gd" id="1_01l6s"]
+[ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="2_u041q"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_sn7ua"]
+radius = 26.0
+
+[node name="FirePuddle" type="Area2D" unique_id=1488627631]
+collision_mask = 15
+script = ExtResource("1_01l6s")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=866438756]
+modulate = Color(0.7615666, 3.4413488e-06, 7.70092e-07, 1)
+scale = Vector2(0.38430506, 0.38430506)
+texture = ExtResource("2_u041q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1942293125]
+shape = SubResource("CircleShape2D_sn7ua")

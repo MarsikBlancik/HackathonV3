@@ -43,6 +43,7 @@ func get_gadget_display_name(gadget_name: String) -> String:
 		"mines": return "Wybuchowe Miny\n(Zostają na podłodze)"
 		"dash_ram": return "Taranowanie\n(Ranisz wrogów podczas uniku)"
 		"pipe_bomb": return "Granat Rurowy\n(Prawy Przycisk Myszy)" # <--- NOWOŚĆ
+		"molotov": return "Koktajl Mołotowa\n(Klawisz E)"
 		_: return gadget_name
 
 func _on_choice_made(gadget_name: String) -> void:

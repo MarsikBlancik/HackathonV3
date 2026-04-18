@@ -12,6 +12,8 @@ const MINE_SCENE = preload("res://Mine.tscn")
 var mine_timer: Timer
 const PIPEBOMB_SCENE = preload("res://PipeBomb.tscn")
 var pipe_bomb_cooldown: float = 0.0
+const MOLOTOV_SCENE = preload("res://Molotov.tscn")
+var molotov_cooldown: float = 0.0
 
 # 2. MODUŁ STATYSTYK
 const BASE_STAT: int = 1
@@ -97,6 +99,9 @@ func _process(delta: float) -> void:
 	if pipe_bomb_cooldown > 0:
 		pipe_bomb_cooldown -= delta
 	
+	if molotov_cooldown > 0:
+		molotov_cooldown -= delta
+	
 	# Jeśli włączony jest tryb Auto (klawisz T)
 	if is_auto_attack:
 		# Auto-Atak Mieczem
@@ -106,6 +111,9 @@ func _process(delta: float) -> void:
 		# Auto-Rzut Granatem
 		if gadget_manager.gadgets["pipe_bomb"] > 0 and pipe_bomb_cooldown <= 0.0:
 			auto_throw_pipe_bomb()
+			
+		if gadget_manager.gadgets["molotov"] > 0 and molotov_cooldown <= 0.0:
+			auto_throw_molotov()
 	
 	# 3. Ruch
 	var input_direction = Vector2.ZERO
@@ -150,6 +158,11 @@ func _input(event: InputEvent) -> void:
 		if event.physical_keycode == KEY_T:
 			is_auto_attack = not is_auto_attack
 			print("Tryb Auto-Ataku: ", "WŁĄCZONY" if is_auto_attack else "WYŁĄCZONY")
+		
+		if event.physical_keycode == KEY_E:
+			var molotov_tier = gadget_manager.gadgets["molotov"]
+			if molotov_tier > 0 and molotov_cooldown <= 0.0:
+				throw_molotov(molotov_tier, get_global_mouse_position())
 			
 	if event is InputEventMouseButton and event.pressed:
 		
@@ -503,3 +516,34 @@ func auto_throw_pipe_bomb() -> void:
 		var bomb_tier = gadget_manager.gadgets["pipe_bomb"]
 		# Rzucamy w pozycję namierzonego wroga!
 		throw_pipe_bomb(bomb_tier, closest_enemy.global_position)
+
+func throw_molotov(tier: int, target_pos: Vector2) -> void:
+	if not MOLOTOV_SCENE: return
+	
+	# Cooldown maleje z ulepszeniami
+	match tier:
+		1: molotov_cooldown = 6.0
+		2: molotov_cooldown = 4.0
+		3: molotov_cooldown = 4.0
+		
+	var bottle = MOLOTOV_SCENE.instantiate()
+	get_parent().add_child(bottle)
+	bottle.throw_bottle(global_position, target_pos, tier)
+
+func auto_throw_molotov() -> void:
+	var enemies = get_tree().get_nodes_in_group("Enemy")
+	if enemies.is_empty(): return
+	
+	var closest_enemy = null
+	var min_distance = 600.0 
+	
+	for enemy in enemies:
+		if not is_instance_valid(enemy): continue
+		var dist = global_position.distance_to(enemy.global_position)
+		if dist < min_distance:
+			min_distance = dist
+			closest_enemy = enemy
+			
+	if closest_enemy != null:
+		var tier = gadget_manager.gadgets["molotov"]
+		throw_molotov(tier, closest_enemy.global_position)
