@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://dff7ow4nfmpvf"]
+
+[ext_resource type="Script" uid="uid://bmudpdbvays3w" path="res://xp_gem.gd" id="1_oacb4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0fsme"]
+radius = 7.58
+
+[sub_resource type="Gradient" id="Gradient_oacb4"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ulokc"]
+gradient = SubResource("Gradient_oacb4")
+
+[node name="XpGem" type="Area2D" unique_id=603420744]
+z_index = 1001
+script = ExtResource("1_oacb4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1005760550]
+scale = Vector2(0.99999994, 0.99999994)
+shape = SubResource("CircleShape2D_0fsme")
+
+[node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=706991989]
+top_level = true
+z_index = 3
+position = Vector2(-2.3841858e-07, 2.3841858e-07)
+scale = Vector2(0.18125, 0.18125)
+texture = SubResource("GradientTexture2D_ulokc")
+flip_h = true
