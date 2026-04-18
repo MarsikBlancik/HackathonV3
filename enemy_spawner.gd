@@ -1,6 +1,7 @@
 extends Node2D
 
-@export var enemy_scene: PackedScene 
+# ZMIANA: Tablica scen przeciwników zamiast jednej sceny
+@export var enemy_scenes: Array[PackedScene] 
 @export var offscreen_buffer: float = 100.0
 
 # --- USTAWIENIA TRUDNOŚCI ---
@@ -21,19 +22,15 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	# Płynnie zmniejszamy czas bazowy co klatkę.
-	# Obliczamy o ile sekund czas ma spadać w ciągu JEDNEJ sekundy gry.
 	var decrease_per_second = (initial_spawn_time - min_spawn_time) / time_to_reach_limit
-	
 	current_base_time -= decrease_per_second * delta
-	
-	# Pilnujemy, aby czas bazowy nie spadł poniżej limitu
 	current_base_time = max(min_spawn_time, current_base_time)
 
 func _on_timer_timeout() -> void:
 	if is_instance_valid(player):
 		spawn_enemy()
 		
-	# Odpalamy Timer na nowo (nie obniżamy już czasu tutaj!)
+	# Odpalamy Timer na nowo
 	set_next_timer()
 
 func set_next_timer() -> void:
@@ -44,7 +41,19 @@ func set_next_timer() -> void:
 	timer.start(next_time)
 
 func spawn_enemy() -> void:
-	var new_enemy = enemy_scene.instantiate()
+	# Zabezpieczenie: Sprawdzamy, czy tablica nie jest pusta
+	if enemy_scenes.is_empty():
+		print("BŁĄD: Lista enemy_scenes jest pusta! Dodaj wrogów w Inspektorze.")
+		return
+
+	# Losujemy jedną scenę z dostępnych w tablicy
+	var random_scene = enemy_scenes.pick_random()
+	
+	# Upewniamy się, że wylosowane pole nie jest puste (np. ktoś dodał element, ale nie przypisał pliku)
+	if random_scene == null:
+		return
+		
+	var new_enemy = random_scene.instantiate()
 	var random_angle = randf() * TAU
 	
 	var viewport_size = get_viewport_rect().size
