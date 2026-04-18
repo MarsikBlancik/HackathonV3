@@ -3,6 +3,9 @@ extends Node2D
 # 1. SYGNAŁY
 signal hp_changed(current_hp: int, max_hp: int)
 signal energy_changed(current_energy: int, max_energy: int)
+signal xp_changed(current_xp: int, max_xp: int) # <--- NOWE
+signal leveled_up(new_level: int) # <--- NOWE
+
 
 # 2. MODUŁ STATYSTYK
 const BASE_STAT: int = 1
@@ -10,6 +13,11 @@ const BASE_STAT: int = 1
 @export var max_hp: int = BASE_STAT * 3
 @export var max_energy: int = BASE_STAT * 3
 @export var energy_recharge_time: float = 2.0
+
+# --- NOWE: SYSTEM XP ---
+var level: int = 1
+var current_xp: int = 0
+var xp_to_next_level: int = 5 # Ile XP potrzeba do 2 poziomu
 
 var current_hp: int
 var current_energy: int
@@ -52,6 +60,10 @@ func _ready() -> void:
 	current_energy = max_energy
 	hp_changed.emit(current_hp, max_hp)
 	energy_changed.emit(current_energy, max_energy)
+	
+	# --- NOWE: Wysyłamy stan XP na start ---
+	xp_changed.emit(current_xp, xp_to_next_level)
+	leveled_up.emit(level)
 
 	ghost_timer = Timer.new()
 	ghost_timer.wait_time = 0.03 
@@ -308,3 +320,31 @@ func die() -> void:
 	Engine.time_scale = 1.0
 	# Używamy call_deferred, aby Godot spokojnie dokończył klatkę fizyki przed zmianą sceny
 	get_tree().call_deferred("change_scene_to_file", "res://game_over_menu.tscn")
+	
+	# --- MODUŁ DOŚWIADCZENIA (XP) ---
+func gain_xp(amount: int) -> void:
+	current_xp += amount
+	print("Zdobyto ", amount, " XP!")
+	
+	# Sprawdzamy, czy mamy wystarczająco XP do awansu.
+	# Używamy "while" na wypadek, gdyby gracz dostał tak dużo XP, że awansuje o 2 poziomy naraz!
+	while current_xp >= xp_to_next_level:
+		current_xp -= xp_to_next_level
+		level_up()
+		
+	# Na koniec informujemy UI o nowym pasku XP
+	xp_changed.emit(current_xp, xp_to_next_level)
+
+func level_up() -> void:
+	level += 1
+	# Zwiększamy wymagania na kolejny poziom (np. mnożymy przez 1.5)
+	xp_to_next_level = int(xp_to_next_level * 1.5) 
+	
+	print("Awans! Jesteś na poziomie: ", level)
+	
+	# Opcjonalnie: nagroda za awans (np. leczenie do pełna)
+	current_hp = max_hp
+	hp_changed.emit(current_hp, max_hp)
+	
+	# Informujemy UI, żeby zmieniło tekst z numerem poziomu
+	leveled_up.emit(level)
