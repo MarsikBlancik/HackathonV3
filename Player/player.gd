@@ -23,6 +23,11 @@ const BASE_STAT: int = 1
 @export var max_energy: int = BASE_STAT * 3
 @export var energy_recharge_time: float = 2.0
 
+# --- ROZSZERZONE STATYSTYKI ZADAWANIA OBRAŻEŃ ---
+var base_damage: int = 2
+var crit_chance: float = 0.05 # 5% szansy na krytyka na start
+var crit_multiplier: float = 2.0 # Krytyk zadaje 2x obrażeń na start
+
 # --- SYSTEM XP ---
 var level: int = 1
 var current_xp: int = 0
@@ -224,6 +229,18 @@ func perform_auto_attack() -> void:
 	if closest_enemy != null:
 		attack_towards(closest_enemy.global_position)
 
+# --- NOWOŚĆ: FUNKCJA OBLICZAJĄCA OBRAŻENIA I KRYTYKI ---
+func get_calculated_damage(custom_base_dmg: int = 0) -> Dictionary:
+	var dmg_to_calc = custom_base_dmg if custom_base_dmg > 0 else base_damage
+	var final_dmg = dmg_to_calc
+	var is_crit = false
+	
+	if randf() < crit_chance:
+		final_dmg = int(final_dmg * crit_multiplier)
+		is_crit = true
+	
+	return {"damage": final_dmg, "is_crit": is_crit}
+
 func attack_towards(target_pos: Vector2) -> void:
 	# --- PRZERYWANIE DASHA ATAKIEM ---
 	if is_dashing:
@@ -299,7 +316,13 @@ func attack_towards(target_pos: Vector2) -> void:
 
 		var target = area.get_parent()
 		if target != null and target.has_method("take_damage"):
-			target.take_damage(BASE_STAT * 1, global_position)
+			# Użycie nowej funkcji zadawania obrażeń!
+			var dmg_data = get_calculated_damage()
+			target.take_damage(dmg_data.damage, global_position)
+			
+			if dmg_data.is_crit:
+				print("KRYTYK! Zadano: ", dmg_data.damage) # Opcjonalnie: możemy później dodać tu czerwony numerek obrażeń
+				
 			apply_hit_stop(0.05)
 	)
 	
@@ -323,7 +346,7 @@ func perform_dash() -> void:
 	is_dashing = true
 	ghost_timer.start() 
 	
-	# --- NOWOŚĆ: GADŻET TARANOWANIA ---
+	# --- GADŻET TARANOWANIA ---
 	var ram_tier = gadget_manager.gadgets["dash_ram"]
 	if ram_tier > 0:
 		var ram_area = Area2D.new()
@@ -345,8 +368,12 @@ func perform_dash() -> void:
 				
 			if target.is_in_group("Enemy") and target.has_method("take_damage") and not target in hit_enemies:
 				hit_enemies.append(target)
-				var ram_damage = ram_tier * 2 
-				target.take_damage(ram_damage, global_position)
+				
+				# Taranowanie również może być krytyczne!
+				var ram_base_dmg = ram_tier * 2 
+				var dmg_data = get_calculated_damage(ram_base_dmg)
+				
+				target.take_damage(dmg_data.damage, global_position)
 				apply_hit_stop(0.04) 
 		
 		ram_area.body_entered.connect(hit_logic)
@@ -487,6 +514,42 @@ func gain_coins(amount: int) -> void:
 	coins += amount
 	print("Zebrano monety! Masz teraz: ", coins)
 	coins_changed.emit(coins)
+
+# --- SYSTEM EKONOMII I ULEPSZEŃ ---
+
+# Słownik pamiętający, ile razy gracz kupił dane ulepszenie
+var purchased_upgrades: Dictionary = {}
+
+func spend_coins(amount: int) -> bool:
+	if coins >= amount:
+		coins -= amount
+		coins_changed.emit(coins)
+		return true
+	return false
+
+# Ulepszenie 1: Max HP
+func upgrade_max_hp(amount: int) -> void:
+	max_hp += amount
+	current_hp += amount 
+	hp_changed.emit(current_hp, max_hp)
+	print("Ulepszono! Max HP to teraz: ", max_hp)
+
+# Ulepszenie 2: Szybkość Ataku
+func upgrade_attack_speed(reduction: float) -> void:
+	attack_cooldown = max(0.1, attack_cooldown - reduction)
+	print("Ulepszono! Cooldown ataku to teraz: ", attack_cooldown)
+
+# Ulepszenie 3: Prędkość Ruchu
+func upgrade_speed(amount: float) -> void:
+	speed += amount
+	print("Ulepszono! Prędkość ruchu to teraz: ", speed)
+
+# Ulepszenie 4: Dodatkowe Dashe (Max Energia)
+func upgrade_max_energy(amount: int) -> void:
+	max_energy += amount
+	current_energy += amount # Od razu dajemy mu tę energię, żeby mógł jej użyć
+	energy_changed.emit(current_energy, max_energy)
+	print("Ulepszono! Max Energii (Dashe) to teraz: ", max_energy)
 
 func _on_animation_finished() -> void:
 	if animated_sprite:

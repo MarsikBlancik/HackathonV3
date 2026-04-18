@@ -5,6 +5,15 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3tnb3"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ssic7"]
+bg_color = Color(0.12223478, 0.12223478, 0.12223478, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.41368303, 0.4136831, 0.41368303, 1)
+shadow_size = 8
+
 [node name="ShopArea" type="Area2D" unique_id=1935088219]
 process_mode = 3
 script = ExtResource("1_ssic7")
@@ -30,6 +39,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ssic7")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ShopUI/Panel" unique_id=1361339095]
 layout_mode = 1
@@ -57,6 +67,13 @@ custom_minimum_size = Vector2(500, 800)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
+
+[node name="Button4" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=73918647]
+layout_mode = 2
+
+[node name="Button5" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=2014573400]
+layout_mode = 2
+text = "Odśwież"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]
