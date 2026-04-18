@@ -3,9 +3,10 @@ extends Node2D
 # 1. SYGNAŁY
 signal hp_changed(current_hp: int, max_hp: int)
 signal energy_changed(current_energy: int, max_energy: int)
-signal xp_changed(current_xp: int, max_xp: int) # <--- NOWE
-signal leveled_up(new_level: int) # <--- NOWE
-signal show_upgrade_menu(choices: Array) # <--- NOWY SYGNAŁ
+signal xp_changed(current_xp: int, max_xp: int)
+signal leveled_up(new_level: int)
+signal show_upgrade_menu(choices: Array)
+signal coins_changed(current_coins: int)
 
 const DRONE_SCENE = preload("res://Gadgets/Drone.tscn")
 const MINE_SCENE = preload("res://Mine.tscn")
@@ -22,38 +23,46 @@ const BASE_STAT: int = 1
 @export var max_energy: int = BASE_STAT * 3
 @export var energy_recharge_time: float = 2.0
 
-# --- NOWE: SYSTEM XP ---
+# --- SYSTEM XP ---
 var level: int = 1
 var current_xp: int = 0
-var xp_to_next_level: int = 5 # Ile XP potrzeba do 2 poziomu
+var xp_to_next_level: int = 5 
 
 var current_hp: int
 var current_energy: int
 var energy_timer: float = 0.0
 
+var coins: int = 0
+
 # 3. MODUŁ RUCHU
 @export var speed: float = 200.0
 @export var acceleration: float = 15.0 
-@export var friction: float = 15.0     
+@export var friction: float = 15.0      
 @export var dash_distance: float = 150.0
 @export var dash_duration: float = 0.2
 
 var is_dashing: bool = false
 var last_direction: Vector2 = Vector2.RIGHT
 var current_velocity: Vector2 = Vector2.ZERO
+var dash_tween: Tween # <--- DODANE: Referencja do Tweena dasha
 
-# --- MODUŁ ATAKU (NOWOŚĆ) ---
-@export var is_auto_attack: bool = false # Czy tryb auto jest domyślnie włączony?
-@export var attack_cooldown: float = 0.5 # Opóźnienie między atakami (0.5 sekundy)
-@export var auto_attack_range: float = 250.0 # Jak daleko widzi auto-atak
-var time_since_last_attack: float = 100.0 # Startowo ustawione wysoko, żeby od razu móc uderzyć
+# --- MODUŁ ATAKU I AKCJI ---
+@export var is_auto_attack: bool = false 
+@export var attack_cooldown: float = 0.5 
+@export var auto_attack_range: float = 250.0 
+var time_since_last_attack: float = 100.0 
+
+var is_attacking: bool = false 
+var is_parrying: bool = false 
 
 # EFEKTY
 const BLOOD_SCENE = preload("res://EyeCandy/BloodParticles.tscn")
 const BLOOD_STAIN_SCENE = preload("res://EyeCandy/BloodPixels.tscn") 
+const SLASH_TEXTURE = preload("res://Player/Trail.png") # <--- ZMIEŃ NAZWĘ PLIKU!
 
 var ghost_timer: Timer
-@onready var sprite: Sprite2D = $CharacterBody2D/Sprite2D 
+
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D 
 @onready var camera: Camera2D = $Camera2D
 @onready var gadget_manager: Node = $GadgetManager # <--- NOWA REFERENCJA
 
@@ -70,7 +79,6 @@ func _ready() -> void:
 	hp_changed.emit(current_hp, max_hp)
 	energy_changed.emit(current_energy, max_energy)
 	
-	# --- NOWE: Wysyłamy stan XP na start ---
 	xp_changed.emit(current_xp, xp_to_next_level)
 	leveled_up.emit(level)
 
@@ -79,10 +87,15 @@ func _ready() -> void:
 	ghost_timer.timeout.connect(create_dash_ghost)
 	add_child(ghost_timer)
 	
+<<<<<<< HEAD
 	# Tworzymy zegar, który będzie tykał w tle i zrzucał miny
 	mine_timer = Timer.new()
 	mine_timer.timeout.connect(_drop_mine)
 	add_child(mine_timer)
+=======
+	if animated_sprite:
+		animated_sprite.animation_finished.connect(_on_animation_finished)
+>>>>>>> main
 
 func _process(delta: float) -> void:
 	# 1. Odnawianie energii
@@ -99,6 +112,7 @@ func _process(delta: float) -> void:
 	if pipe_bomb_cooldown > 0:
 		pipe_bomb_cooldown -= delta
 	
+<<<<<<< HEAD
 	if molotov_cooldown > 0:
 		molotov_cooldown -= delta
 	
@@ -114,10 +128,15 @@ func _process(delta: float) -> void:
 			
 		if gadget_manager.gadgets["molotov"] > 0 and molotov_cooldown <= 0.0:
 			auto_throw_molotov()
+=======
+	if is_auto_attack and time_since_last_attack >= attack_cooldown:
+		perform_auto_attack()
+>>>>>>> main
 	
 	# 3. Ruch
 	var input_direction = Vector2.ZERO
-	if not is_dashing:
+	# Blokujemy poruszanie się podczas Dasha oraz Parowania
+	if not is_dashing and not is_parrying:
 		if Input.is_physical_key_pressed(KEY_D): input_direction.x += 1
 		if Input.is_physical_key_pressed(KEY_A): input_direction.x -= 1
 		if Input.is_physical_key_pressed(KEY_S): input_direction.y += 1
@@ -126,18 +145,39 @@ func _process(delta: float) -> void:
 		if input_direction.length() > 0:
 			input_direction = input_direction.normalized()
 			last_direction = input_direction
-			
-		if input_direction.length() > 0:
 			current_velocity = current_velocity.lerp(input_direction * speed, acceleration * delta)
 		else:
 			current_velocity = current_velocity.lerp(Vector2.ZERO, friction * delta)
+	elif is_parrying:
+		current_velocity = current_velocity.lerp(Vector2.ZERO, friction * delta)
 	else:
 		current_velocity = Vector2.ZERO
 		
+	# 4. SYSTEM ANIMACJI
+	if animated_sprite:
+		if input_direction.x != 0 and not is_attacking and not is_dashing and not is_parrying:
+			animated_sprite.flip_h = input_direction.x < 0
+			
+		if is_dashing:
+			animated_sprite.play("Dash")
+			if is_attacking:
+				animated_sprite.play("Attack")
+		elif is_attacking:
+			animated_sprite.play("Attack")
+			if is_dashing:
+				animated_sprite.play("Dash")
+		elif is_parrying:
+			pass
+		elif current_velocity.length() > 5.0:
+			animated_sprite.play("Walk")
+		else:
+			animated_sprite.play("default")
+			
+	# Zastosowanie prędkości do pozycji
 	knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_friction * delta)
 	position += (current_velocity + knockback_velocity) * delta
 	
-	# 4. Trzęsienie kamery
+	# 5. Trzęsienie kamery
 	if shake_strength > 0:
 		shake_strength = lerpf(shake_strength, 0.0, shake_decay * delta)
 		var random_offset = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized()
@@ -154,7 +194,6 @@ func _input(event: InputEvent) -> void:
 		if event.physical_keycode == KEY_F:
 			modify_hp(-1)
 			
-		# Zmiana trybu za pomocą klawisza T
 		if event.physical_keycode == KEY_T:
 			is_auto_attack = not is_auto_attack
 			print("Tryb Auto-Ataku: ", "WŁĄCZONY" if is_auto_attack else "WYŁĄCZONY")
@@ -168,6 +207,7 @@ func _input(event: InputEvent) -> void:
 		
 		# --- LEWY KLIK: ATAK MIECZEM ---
 		if event.button_index == MOUSE_BUTTON_LEFT:
+<<<<<<< HEAD
 			if not is_auto_attack and time_since_last_attack >= attack_cooldown:
 				attack_towards(get_global_mouse_position())
 				
@@ -177,16 +217,21 @@ func _input(event: InputEvent) -> void:
 			if bomb_tier > 0 and pipe_bomb_cooldown <= 0.0:
 				# Przekazujemy pozycję myszki jako cel!
 				throw_pipe_bomb(bomb_tier, get_global_mouse_position())
+=======
+			if not is_auto_attack and time_since_last_attack >= attack_cooldown and not is_parrying:
+				attack_towards(get_global_mouse_position())
+		elif event.button_index == MOUSE_BUTTON_RIGHT:
+			if not is_dashing and not is_attacking and not is_parrying:
+				perform_parry()
+>>>>>>> main
 
-# --- NOWOŚĆ: SZUKANIE NAJBLIŻSZEGO WROGA ---
 func perform_auto_attack() -> void:
 	var enemies = get_tree().get_nodes_in_group("Enemy")
-	if enemies.is_empty(): return # Jeśli nie ma wrogów na mapie, nic nie rób
+	if enemies.is_empty(): return 
 	
 	var closest_enemy = null
 	var min_distance = auto_attack_range
 	
-	# Sprawdzamy odległość każdego wroga
 	for enemy in enemies:
 		if not is_instance_valid(enemy): continue
 		
@@ -195,46 +240,83 @@ func perform_auto_attack() -> void:
 			min_distance = dist
 			closest_enemy = enemy
 			
-	# Jeśli znaleźliśmy wroga w zasięgu, atakujemy w jego stronę
 	if closest_enemy != null:
 		attack_towards(closest_enemy.global_position)
 
-# --- ZMIENIONA FUNKCJA ATAKU (Teraz przyjmuje pozycję celu) ---
+# --- ZMIENIONO: attack_towards z nowym trailem na bazie maski (ProgressBar) i przerywaniem dasha ---
 func attack_towards(target_pos: Vector2) -> void:
+	# --- PRZERYWANIE DASHA ATAKIEM ---
+	if is_dashing:
+		is_dashing = false
+		ghost_timer.stop()
+		if dash_tween and dash_tween.is_valid():
+			dash_tween.kill() 
+			
 	time_since_last_attack = 0.0 
 	
 	var attack_direction = (target_pos - global_position).normalized()
-	var attack_distance = 45.0
 	
+	is_attacking = true
+	if animated_sprite:
+		animated_sprite.play("Attack")
+		animated_sprite.flip_h = attack_direction.x < 0
+	
+	var base_angle = attack_direction.angle()
+	var attack_distance = 50.0 
+	
+	# --- NOWY SYSTEM TRAILU: Węzeł paska postępu jako maska ---
+	var slash = TextureProgressBar.new()
+	slash.texture_progress = SLASH_TEXTURE
+	
+	slash.scale = Vector2(0.45, 0.45) 
+	slash.pivot_offset = SLASH_TEXTURE.get_size() / 2.0
+	
+	slash.min_value = 0
+	slash.max_value = 100
+	slash.value = 0 
+	
+	slash.fill_mode = TextureProgressBar.FILL_CLOCKWISE
+	
+	get_parent().add_child(slash)
+	
+	slash.global_position = global_position + (attack_direction * attack_distance) - (slash.pivot_offset * slash.scale)
+	slash.rotation = base_angle
+	slash.z_index = z_index + 1 
+	
+	if attack_direction.x < 0:
+		slash.fill_mode = TextureProgressBar.FILL_COUNTER_CLOCKWISE
+		
+	var tween = slash.create_tween()
+	tween.tween_property(slash, "value", 100, 0.08).set_ease(Tween.EASE_OUT)
+	tween.tween_property(slash, "modulate:a", 0.0, 0.15).set_ease(Tween.EASE_IN)
+	tween.chain().tween_callback(slash.queue_free)
+
+	# --- Hitbox ataku ---
 	var attack_area = Area2D.new()
-	# --- NOWE: Nadajemy mieczowi imię, żeby pocisk go rozpoznał ---
 	attack_area.name = "Sword" 
 	
-	attack_area.position = attack_direction * attack_distance
+	attack_area.position = attack_direction * (attack_distance + 10.0)
 	attack_area.rotation = attack_direction.angle()
 	
 	var collision_shape = CollisionShape2D.new()
 	var rect_shape = RectangleShape2D.new()
-	rect_shape.size = Vector2(30, 80)
+	
+	rect_shape.size = Vector2(120, 180) 
 	collision_shape.shape = rect_shape
 	attack_area.add_child(collision_shape)
 	
-	var debug_rect = ColorRect.new()
-	debug_rect.color = Color(1.0, 0.0, 0.0, 0.5)
-	debug_rect.size = Vector2(30, 80)
-	debug_rect.position = Vector2(-15, -40)
-	attack_area.add_child(debug_rect)
-	
-	# --- ZMIENIONE WYKRYWANIE KOLIZJI ---
 	attack_area.area_entered.connect(func(area: Area2D):
-		# 1. Sprawdzamy czy uderzyliśmy pocisk (samo Area2D ma funkcję parry)
 		if area.has_method("parry"):
 			var bounce_dir = (target_pos - global_position).normalized()
 			area.parry(bounce_dir)
-			apply_hit_stop(0.1) # Dłuższy hit stop dla fajnego efektu odbicia!
-			return # Przerywamy funkcję, bo to był pocisk
+			apply_hit_stop(0.1) 
+			
+			is_attacking = false
+			is_parrying = true
+			if animated_sprite:
+				animated_sprite.play("Parry")
+			return 
 
-		# 2. Sprawdzamy czy to zwykły wróg (rodzic Area2D)
 		var target = area.get_parent()
 		if target != null and target.has_method("take_damage"):
 			target.take_damage(BASE_STAT * 1, global_position)
@@ -242,14 +324,23 @@ func attack_towards(target_pos: Vector2) -> void:
 	)
 	
 	add_child(attack_area)
-	get_tree().create_timer(0.2).timeout.connect(attack_area.queue_free)
+	get_tree().create_timer(0.15).timeout.connect(attack_area.queue_free)
 
-# --- RESZTA FUNKCJI BEZ ZMIAN ---
+func perform_parry() -> void:
+	is_parrying = true
+	if animated_sprite:
+		animated_sprite.play("Parry")
+
 func perform_dash() -> void:
 	var dash_cost = BASE_STAT * 1
 	if current_energy < dash_cost: return
 		
 	modify_energy(-dash_cost)
+	
+	# Anulujemy atak/parowanie przy uniku
+	is_attacking = false
+	is_parrying = false
+	
 	is_dashing = true
 	ghost_timer.start() 
 	
@@ -291,15 +382,41 @@ func perform_dash() -> void:
 	
 	# Klasyczny lot dasha
 	var target_position = position + (last_direction * dash_distance)
-	var tween = create_tween()
-	tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(self, "position", target_position, dash_duration)
 	
-	tween.finished.connect(func(): 
+	# --- NOWE: Przypisywanie do zmiennej globalnej ---
+	if dash_tween and dash_tween.is_valid():
+		dash_tween.kill()
+		
+	dash_tween = create_tween()
+	dash_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	dash_tween.tween_property(self, "position", target_position, dash_duration)
+	
+	dash_tween.finished.connect(func(): 
 		is_dashing = false
 		ghost_timer.stop() 
 	)
 
+<<<<<<< HEAD
+=======
+func create_dash_ghost() -> void:
+	if not animated_sprite: return
+		
+	var ghost = Sprite2D.new()
+	ghost.texture = animated_sprite.sprite_frames.get_frame_texture(animated_sprite.animation, animated_sprite.frame)
+	
+	ghost.flip_h = animated_sprite.flip_h
+	ghost.flip_v = animated_sprite.flip_v
+	ghost.global_scale = animated_sprite.global_scale
+	ghost.global_position = animated_sprite.global_position
+	ghost.modulate = Color(1.0, 1.0, 1.0, 0.7)
+	
+	get_parent().add_child(ghost)
+	
+	var tween = create_tween()
+	tween.tween_property(ghost, "modulate:a", 0.0, 0.3)
+	tween.finished.connect(ghost.queue_free)
+
+>>>>>>> main
 func apply_camera_shake(intensity: float) -> void:
 	shake_strength = intensity
 
@@ -309,10 +426,9 @@ func apply_hit_stop(duration: float) -> void:
 	Engine.time_scale = 1.0
 
 func modify_hp(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
-	# --- NOWOŚĆ: Nietykalność podczas dasha (i-frames) ---
-	if amount < 0 and is_dashing:
-		print("Dodge! Uniknięto ataku.")
-		return # Przerwane! Kod poniżej się nie wykona, gracz nie dostaje obrażeń.
+	if amount < 0 and (is_dashing or is_parrying):
+		print("Dodge/Parry! Uniknięto ataku.")
+		return 
 
 	current_hp = clampi(current_hp + amount, 0, max_hp)
 	hp_changed.emit(current_hp, max_hp)
@@ -345,31 +461,23 @@ func spawn_damage_number(damage_value: int) -> void:
 	var label = Label.new()
 	label.text = "-" + str(damage_value)
 	
-	# Stylizacja tekstu (kolor czerwony, pogrubienie i czarny obrys dla czytelności)
 	label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.2))
 	label.add_theme_font_size_override("font_size", 42)
 	label.add_theme_constant_override("outline_size", 12)
 	
-	# Losowa pozycja wokół gracza
 	var random_offset = Vector2(randf_range(-30, 30), randf_range(-40, -10))
 	label.global_position = global_position + random_offset
 	
-	# Z-Index, aby upewnić się, że tekst jest nad graczem/resztą gry
 	label.z_index = 10 
 	
-	# Ważne: dodajemy do głównego drzewa (rodzica gracza), aby napis nie ruszał się razem z graczem
 	get_parent().add_child(label)
 	
-	# Animacja za pomocą Tween (równoległa: unosi się i staje się przezroczysty)
 	var tween = label.create_tween()
 	tween.set_parallel(true)
 	
-	# Przesunięcie wyżej o 40 pikseli w 0.6 sekundy
 	tween.tween_property(label, "global_position:y", label.global_position.y - 40, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	# Zanikanie (kanał alpha) w 0.6 sekundy
 	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_ease(Tween.EASE_IN)
 	
-	# Po zakończeniu animacji usuwamy Label, żeby nie zaśmiecać pamięci
 	tween.chain().tween_callback(label.queue_free)
 
 func modify_energy(amount: int) -> void:
@@ -378,32 +486,31 @@ func modify_energy(amount: int) -> void:
 
 func die() -> void:
 	Engine.time_scale = 1.0
-	# Używamy call_deferred, aby Godot spokojnie dokończył klatkę fizyki przed zmianą sceny
 	get_tree().call_deferred("change_scene_to_file", "res://Menus/game_over_menu.tscn")
 	
-	# --- MODUŁ DOŚWIADCZENIA (XP) ---
 func gain_xp(amount: int) -> void:
 	current_xp += amount
 	print("Zdobyto ", amount, " XP!")
 	
-	# Sprawdzamy, czy mamy wystarczająco XP do awansu.
-	# Używamy "while" na wypadek, gdyby gracz dostał tak dużo XP, że awansuje o 2 poziomy naraz!
 	while current_xp >= xp_to_next_level:
 		current_xp -= xp_to_next_level
 		level_up()
 		
-	# Na koniec informujemy UI o nowym pasku XP
 	xp_changed.emit(current_xp, xp_to_next_level)
 
 func level_up() -> void:
 	level += 1
+<<<<<<< HEAD
 	# Zwiększamy wymagania na kolejny poziom
+=======
+>>>>>>> main
 	xp_to_next_level = int(xp_to_next_level * 1.5) 
 	
 	print("Awans! Jesteś na poziomie: ", level)
 	
 	current_hp = max_hp
 	hp_changed.emit(current_hp, max_hp)
+<<<<<<< HEAD
 	leveled_up.emit(level)
 	
 	# --- NOWOŚĆ: LOGIKA WYBORU GADŻETÓW ---
@@ -547,3 +654,20 @@ func auto_throw_molotov() -> void:
 	if closest_enemy != null:
 		var tier = gadget_manager.gadgets["molotov"]
 		throw_molotov(tier, closest_enemy.global_position)
+=======
+	
+	leveled_up.emit(level)
+	
+func gain_coins(amount: int) -> void:
+	coins += amount
+	print("Zebrano monety! Masz teraz: ", coins)
+	coins_changed.emit(coins)
+
+# --- Resetuje stan akcji po zakończeniu animacji ---
+func _on_animation_finished() -> void:
+	if animated_sprite:
+		if animated_sprite.animation == "Attack":
+			is_attacking = false
+		elif animated_sprite.animation == "Parry":
+			is_parrying = false
+>>>>>>> main

@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dsiigcnxays1n" path="res://Menus/pause_menu.tscn" id="6_5crlr"]
 [ext_resource type="PackedScene" uid="uid://cbko0hhof8aom" path="res://LevelUpMenu.tscn" id="6_431t1"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
+[ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_a814b"]
 
@@ -64,6 +65,23 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 metadata/_edit_use_anchors_ = true
 
-[node name="LevelUpMenu" parent="UI" unique_id=1953657605 instance=ExtResource("6_431t1")]
+[node name="CoinLabel" type="Label" parent="UI" unique_id=1352267754]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -182.0
+offset_bottom = 62.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=914282549]
+offset_left = -69593.0
+offset_top = -61385.0
+offset_right = 61798.0
+offset_bottom = 42662.313
+texture = ExtResource("7_431t1")
+stretch_mode = 1
