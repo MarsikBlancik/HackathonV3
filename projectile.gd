@@ -23,19 +23,32 @@ func _process(delta: float) -> void:
 	position += direction * speed * delta
 
 func _on_body_entered(body: Node) -> void:
+	var target = body
+	
+	# --- NOWOŚĆ: SZUKANIE RODZICA ---
+	# Jeśli trafiliśmy w ciało fizyczne, ale to jego rodzic ma statystyki (tak jak u Twojego gracza)
+	if not target.has_method("modify_hp") and target.get_parent() != null and target.get_parent().has_method("modify_hp"):
+		target = target.get_parent()
+		
+	# To samo zabezpieczenie dla wrogów (na przyszłość)
+	if not target.has_method("take_damage") and target.get_parent() != null and target.get_parent().has_method("take_damage"):
+		target = target.get_parent()
+
 	# 1. Trafienie w gracza (jeśli pocisk nie jest sparowany)
-	if not is_parried and body.is_in_group("Player") and body.has_method("modify_hp"):
-		# Przekazujemy global_position, żeby gracz dostał knockback od pocisku!
-		body.modify_hp(-damage, global_position) 
+	if not is_parried and target.is_in_group("Player") and target.has_method("modify_hp"):
+		target.modify_hp(-damage, global_position) 
 		queue_free()
 		
 	# 2. Trafienie we wroga (jeśli pocisk został odbity/sparowany)
-	elif is_parried and body.has_method("take_damage") and not body.is_in_group("Player"):
-		# Sparowany pocisk zadaje np. podwójne obrażenia
-		body.take_damage(damage * 2, global_position) 
+	elif is_parried and target.has_method("take_damage") and not target.is_in_group("Player"):
+		target.take_damage(damage * 2, global_position) 
 		queue_free()
 
 func _on_area_entered(area: Area2D) -> void:
+	# Ignorujemy całkowicie miecz gracza podczas zadawania obrażeń
+	if area.name == "Sword":
+		return 
+		
 	# Obejście na wypadek, gdyby detekcja opierała się na Area2D zamiast ciał
 	var parent = area.get_parent()
 	if parent != null:
@@ -46,8 +59,8 @@ func parry(new_direction: Vector2) -> void:
 	if can_be_parried and not is_parried:
 		print("Pocisk sparowany!")
 		is_parried = true
-		direction = new_direction # Odbijamy w nowym kierunku
-		speed *= 1.5 # Odbity pocisk przyspiesza
+		direction = new_direction 
+		speed *= 1.5 
 		
 		# Zmiana koloru na zielony, jako wskaźnik odbicia
 		modulate = Color(0.0, 1.0, 0.0)

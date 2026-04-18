@@ -148,13 +148,15 @@ func perform_auto_attack() -> void:
 
 # --- ZMIENIONA FUNKCJA ATAKU (Teraz przyjmuje pozycję celu) ---
 func attack_towards(target_pos: Vector2) -> void:
-	# Zerujemy cooldown po wykonaniu ataku!
 	time_since_last_attack = 0.0 
 	
 	var attack_direction = (target_pos - global_position).normalized()
 	var attack_distance = 45.0
 	
 	var attack_area = Area2D.new()
+	# --- NOWE: Nadajemy mieczowi imię, żeby pocisk go rozpoznał ---
+	attack_area.name = "Sword" 
+	
 	attack_area.position = attack_direction * attack_distance
 	attack_area.rotation = attack_direction.angle()
 	
@@ -170,7 +172,16 @@ func attack_towards(target_pos: Vector2) -> void:
 	debug_rect.position = Vector2(-15, -40)
 	attack_area.add_child(debug_rect)
 	
+	# --- ZMIENIONE WYKRYWANIE KOLIZJI ---
 	attack_area.area_entered.connect(func(area: Area2D):
+		# 1. Sprawdzamy czy uderzyliśmy pocisk (samo Area2D ma funkcję parry)
+		if area.has_method("parry"):
+			var bounce_dir = (target_pos - global_position).normalized()
+			area.parry(bounce_dir)
+			apply_hit_stop(0.1) # Dłuższy hit stop dla fajnego efektu odbicia!
+			return # Przerywamy funkcję, bo to był pocisk
+
+		# 2. Sprawdzamy czy to zwykły wróg (rodzic Area2D)
 		var target = area.get_parent()
 		if target != null and target.has_method("take_damage"):
 			target.take_damage(BASE_STAT * 1, global_position)
@@ -178,7 +189,7 @@ func attack_towards(target_pos: Vector2) -> void:
 	)
 	
 	add_child(attack_area)
-	get_tree().create_timer(0.2).timeout.connect(func(): attack_area.queue_free())
+	get_tree().create_timer(0.2).timeout.connect(attack_area.queue_free)
 
 # --- RESZTA FUNKCJI BEZ ZMIAN ---
 func perform_dash() -> void:
@@ -295,4 +306,5 @@ func modify_energy(amount: int) -> void:
 
 func die() -> void:
 	Engine.time_scale = 1.0
-	get_tree().change_scene_to_file("res://game_over_menu.tscn")
+	# Używamy call_deferred, aby Godot spokojnie dokończył klatkę fizyki przed zmianą sceny
+	get_tree().call_deferred("change_scene_to_file", "res://game_over_menu.tscn")
