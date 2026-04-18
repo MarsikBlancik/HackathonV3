@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://xoulvym7le6k"]
 
 [ext_resource type="Script" uid="uid://c5hd6u8pnjfsn" path="res://ranged_enemy.gd" id="1_o20mk"]
+[ext_resource type="PackedScene" uid="uid://dff7ow4nfmpvf" path="res://XP_Gem.tscn" id="2_8ir81"]
 [ext_resource type="PackedScene" uid="uid://cr1l6cs510xaf" path="res://Projectile.tscn" id="2_smfiu"]
 [ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="2_vqnxx"]
 
@@ -10,6 +11,7 @@ size = Vector2(85, 85)
 [node name="RangedEnemy" type="Node2D" unique_id=513809056]
 modulate = Color(0.46080607, 0.70813626, 3.85046e-07, 1)
 script = ExtResource("1_o20mk")
+xp_gem_scene = ExtResource("2_8ir81")
 projectile_scene = ExtResource("2_smfiu")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1195580192]

@@ -6,6 +6,7 @@
 radius = 7.58
 
 [sub_resource type="Gradient" id="Gradient_oacb4"]
+offsets = PackedFloat32Array(0.9233983, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_ulokc"]
 gradient = SubResource("Gradient_oacb4")
@@ -19,9 +20,8 @@ scale = Vector2(0.99999994, 0.99999994)
 shape = SubResource("CircleShape2D_0fsme")
 
 [node name="Sprite2D" type="Sprite2D" parent="CollisionShape2D" unique_id=706991989]
-top_level = true
 z_index = 3
-position = Vector2(-2.3841858e-07, 2.3841858e-07)
+position = Vector2(-6, -5.999999)
 scale = Vector2(0.18125, 0.18125)
 texture = SubResource("GradientTexture2D_ulokc")
-flip_h = true
+centered = false

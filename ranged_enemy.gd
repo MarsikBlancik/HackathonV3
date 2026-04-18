@@ -1,6 +1,7 @@
 extends Node2D
 
 # --- USTAWIENIA BAZOWE ---
+@export var xp_gem_scene: PackedScene
 @export var speed: float = 80.0 # Strzelec jest wolniejszy
 @export var stop_distance: float = 250.0 # Zatrzymuje się dalej od gracza
 
@@ -73,8 +74,6 @@ func perform_attack() -> void:
 func take_damage(amount: int, source_position: Vector2) -> void:
 	hp -= amount
 	
-	spawn_damage_number(abs(amount))
-	
 	# 1. Knockback 
 	var push_direction = (global_position - source_position).normalized()
 	knockback_velocity = push_direction * 400.0 
@@ -96,36 +95,19 @@ func take_damage(amount: int, source_position: Vector2) -> void:
 	if hp <= 0:
 		die()
 
-func spawn_damage_number(damage_value: int) -> void:
-	var label = Label.new()
-	label.text = "-" + str(damage_value)
+func die() -> void: # Możesz mieć tę funkcję pod inną nazwą, np. take_damage
 	
-	# Stylizacja tekstu (kolor czerwony, pogrubienie i czarny obrys dla czytelności)
-	label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.2))
-	label.add_theme_font_size_override("font_size", 42)
-	label.add_theme_constant_override("outline_size", 12)
+	# --- Tworzenie diamencika ---
+	if xp_gem_scene != null:
+		var gem = xp_gem_scene.instantiate()
+		
+		# Ustawiamy pozycję diamencika dokładnie tam, gdzie zginął wróg
+		gem.global_position = global_position
+		
+		# KLUCZOWE: Dodajemy gem do głównej sceny, a nie do wroga!
+		# Używamy call_deferred, żeby silnik fizyczny Godota się nie zablokował
+		get_tree().current_scene.call_deferred("add_child", gem)
 	
-	# Losowa pozycja wokół gracza
-	var random_offset = Vector2(randf_range(-30, 30), randf_range(-40, -10))
-	label.global_position = global_position + random_offset
+	# --- Koniec tworzenia ---
 	
-	# Z-Index, aby upewnić się, że tekst jest nad graczem/resztą gry
-	label.z_index = 10 
-	
-	# Ważne: dodajemy do głównego drzewa (rodzica gracza), aby napis nie ruszał się razem z graczem
-	get_parent().add_child(label)
-	
-	# Animacja za pomocą Tween (równoległa: unosi się i staje się przezroczysty)
-	var tween = label.create_tween()
-	tween.set_parallel(true)
-	
-	# Przesunięcie wyżej o 40 pikseli w 0.6 sekundy
-	tween.tween_property(label, "global_position:y", label.global_position.y - 40, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
-	# Zanikanie (kanał alpha) w 0.6 sekundy
-	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_ease(Tween.EASE_IN)
-	
-	# Po zakończeniu animacji usuwamy Label, żeby nie zaśmiecać pamięci
-	tween.chain().tween_callback(label.queue_free)
-
-func die() -> void:
-	queue_free()
+	queue_free() # Przeciwnik znika
