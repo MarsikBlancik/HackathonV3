@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://463rd2201wpj" path="res://MainScene/main_scene.gd" id="1_mmud7"]
 [ext_resource type="PackedScene" uid="uid://cl25grr7o014x" path="res://placeholderobiekt.tscn" id="1_x4av3"]
+[ext_resource type="PackedScene" uid="uid://1e6mg1xkvepy" path="res://Shop/Shop.tscn" id="2_gmwbw"]
 [ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player/Player.tscn" id="2_rpqi1"]
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://dsiigcnxays1n" path="res://Menus/pause_menu.tscn" id="6_5crlr"]
@@ -14,6 +15,7 @@
 [node name="MainScene" type="Node2D" unique_id=1237574894]
 z_index = 1002
 script = ExtResource("1_mmud7")
+shop_scene = ExtResource("2_gmwbw")
 
 [node name="Node2D" parent="." unique_id=1689513127 instance=ExtResource("1_x4av3")]
 
@@ -77,6 +79,20 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="LevelUpMenu" parent="UI" unique_id=1953657605 instance=ExtResource("6_431t1")]
+
+[node name="Time" type="Label" parent="UI" unique_id=430083819]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -190.0
+offset_top = -75.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
 

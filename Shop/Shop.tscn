@@ -1,0 +1,62 @@
+[gd_scene format=3 uid="uid://1e6mg1xkvepy"]
+
+[ext_resource type="Texture2D" uid="uid://cdl4lbpianj14" path="res://Shop/Adobe Express - file(1).png" id="1_3tnb3"]
+[ext_resource type="Script" uid="uid://b704v53brypxm" path="res://Shop/shop.gd" id="1_ssic7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3tnb3"]
+
+[node name="ShopArea" type="Area2D" unique_id=1935088219]
+process_mode = 3
+script = ExtResource("1_ssic7")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=877629450]
+texture = ExtResource("1_3tnb3")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1869774846]
+z_index = 2000
+scale = Vector2(75, 75)
+shape = SubResource("RectangleShape2D_3tnb3")
+
+[node name="InteractPrompt" type="Label" parent="." unique_id=1389397834]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Naciśnij B"
+
+[node name="ShopUI" type="CanvasLayer" parent="." unique_id=294296322]
+
+[node name="Panel" type="Panel" parent="ShopUI" unique_id=1553296822]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ShopUI/Panel" unique_id=1361339095]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="Button1" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=810738305]
+custom_minimum_size = Vector2(500, 800)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Button2" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=1517793296]
+custom_minimum_size = Vector2(500, 800)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Button3" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=251814544]
+custom_minimum_size = Vector2(500, 800)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

@@ -4,11 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://uewwbswx7xiu" path="res://Player/spriteframe.png" id="2_q3lat"]
 [ext_resource type="Script" uid="uid://hkfv6afvt4pg" path="res://Player/gadget_manager.gd" id="3_gadget"]
 
-[sub_resource type="Gradient" id="Gradient_0rwas"]
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_xhfnw"]
-gradient = SubResource("Gradient_0rwas")
-
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kpjcp"]
 radius = 9.333334
 height = 43.333336
@@ -101,7 +96,7 @@ animations = [{
 z_index = 2000
 script = ExtResource("1_xhfnw")
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=570689020]
+[node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=570689020 groups=["Player"]]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=288467131]
 scale = Vector2(3, 3)
