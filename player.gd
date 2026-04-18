@@ -3,6 +3,13 @@ extends Node2D
 # 1. SYGNAŁY
 signal hp_changed(current_hp: int, max_hp: int)
 signal energy_changed(current_energy: int, max_energy: int)
+<<<<<<< Updated upstream:player.gd
+=======
+signal xp_changed(current_xp: int, max_xp: int) 
+signal leveled_up(new_level: int) 
+signal coins_changed(current_coins: int)
+
+>>>>>>> Stashed changes:Player/player.gd
 
 # 2. MODUŁ STATYSTYK
 const BASE_STAT: int = 1
@@ -14,6 +21,8 @@ const BASE_STAT: int = 1
 var current_hp: int
 var current_energy: int
 var energy_timer: float = 0.0
+
+var coins: int = 0
 
 # 3. MODUŁ RUCHU
 @export var speed: float = 200.0
@@ -306,5 +315,43 @@ func modify_energy(amount: int) -> void:
 
 func die() -> void:
 	Engine.time_scale = 1.0
+<<<<<<< Updated upstream:player.gd
 	# Używamy call_deferred, aby Godot spokojnie dokończył klatkę fizyki przed zmianą sceny
 	get_tree().call_deferred("change_scene_to_file", "res://game_over_menu.tscn")
+=======
+	get_tree().call_deferred("change_scene_to_file", "res://Menus/game_over_menu.tscn")
+	
+func gain_xp(amount: int) -> void:
+	current_xp += amount
+	print("Zdobyto ", amount, " XP!")
+	
+	while current_xp >= xp_to_next_level:
+		current_xp -= xp_to_next_level
+		level_up()
+		
+	xp_changed.emit(current_xp, xp_to_next_level)
+
+func level_up() -> void:
+	level += 1
+	xp_to_next_level = int(xp_to_next_level * 1.5) 
+	
+	print("Awans! Jesteś na poziomie: ", level)
+	
+	current_hp = max_hp
+	hp_changed.emit(current_hp, max_hp)
+	
+	leveled_up.emit(level)
+	
+func gain_coins(amount: int) -> void:
+	coins += amount
+	print("Zebrano monety! Masz teraz: ", coins)
+	coins_changed.emit(coins)
+
+# --- Resetuje stan akcji po zakończeniu animacji ---
+func _on_animation_finished() -> void:
+	if animated_sprite:
+		if animated_sprite.animation == "Attack":
+			is_attacking = false
+		elif animated_sprite.animation == "Parry":
+			is_parrying = false
+>>>>>>> Stashed changes:Player/player.gd

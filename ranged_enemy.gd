@@ -4,6 +4,7 @@ extends Node2D
 @export var xp_gem_scene: PackedScene
 @export var speed: float = 80.0 # Strzelec jest wolniejszy
 @export var stop_distance: float = 250.0 # Zatrzymuje się dalej od gracza
+@export var coin_scene: PackedScene
 
 # --- USTAWIENIA ATAKU ---
 @export var attack_cooldown: float = 1.5 # Czas między strzałami
@@ -95,9 +96,37 @@ func take_damage(amount: int, source_position: Vector2) -> void:
 	if hp <= 0:
 		die()
 
+<<<<<<< Updated upstream:ranged_enemy.gd
 func die() -> void: # Możesz mieć tę funkcję pod inną nazwą, np. take_damage
 	
 	# --- Tworzenie diamencika ---
+=======
+func spawn_damage_number(damage_value: int) -> void:
+	var label = Label.new()
+	label.text = "-" + str(damage_value)
+	
+	label.add_theme_color_override("font_color", Color(1.0, 0.2, 0.2))
+	label.add_theme_font_size_override("font_size", 42)
+	label.add_theme_constant_override("outline_size", 12)
+	
+	var random_offset = Vector2(randf_range(-30, 30), randf_range(-40, -10))
+	label.global_position = global_position + random_offset
+	
+	label.z_index = 10 
+	
+	get_parent().add_child(label)
+	
+	var tween = label.create_tween()
+	tween.set_parallel(true)
+	
+	tween.tween_property(label, "global_position:y", label.global_position.y - 40, 0.6).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.tween_property(label, "modulate:a", 0.0, 0.6).set_ease(Tween.EASE_IN)
+	
+	tween.chain().tween_callback(label.queue_free)
+
+func die() -> void: 
+	# Wyrzucanie XP
+>>>>>>> Stashed changes:Enemies/ranged_enemy.gd
 	if xp_gem_scene != null:
 		var gem = xp_gem_scene.instantiate()
 		
@@ -107,7 +136,26 @@ func die() -> void: # Możesz mieć tę funkcję pod inną nazwą, np. take_dama
 		# KLUCZOWE: Dodajemy gem do głównej sceny, a nie do wroga!
 		# Używamy call_deferred, żeby silnik fizyczny Godota się nie zablokował
 		get_tree().current_scene.call_deferred("add_child", gem)
+		
+	# --- NOWE: Wyrzucanie od 1 do 3 monet ---
+	if coin_scene != null:
+		var coin_count = randi_range(1, 3)
+		for i in range(coin_count):
+			var coin = coin_scene.instantiate()
+			# Losowe przesunięcie, żeby monety nie leżały idealnie na sobie
+			var random_offset = Vector2(randf_range(-15, 15), randf_range(-15, 15))
+			coin.global_position = global_position + random_offset
+			get_tree().current_scene.call_deferred("add_child", coin)
 	
+<<<<<<< Updated upstream:ranged_enemy.gd
 	# --- Koniec tworzenia ---
 	
 	queue_free() # Przeciwnik znika
+=======
+	queue_free()
+
+# --- NOWE: Resetowanie ataku po zakończeniu animacji ---
+func _on_animation_finished() -> void:
+	if animated_sprite and animated_sprite.animation == "Attack":
+		is_attacking = false
+>>>>>>> Stashed changes:Enemies/ranged_enemy.gd

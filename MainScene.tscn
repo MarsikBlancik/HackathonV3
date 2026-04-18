@@ -56,4 +56,25 @@ offset_bottom = -6.0
 text = "Poziom 1"
 label_settings = SubResource("LabelSettings_a814b")
 
+<<<<<<< Updated upstream:MainScene.tscn
+=======
+[node name="PauseMenu" parent="UI" unique_id=54559525 instance=ExtResource("6_5crlr")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+metadata/_edit_use_anchors_ = true
+
+[node name="CoinLabel" type="Label" parent="UI" unique_id=1289964460]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -147.0
+offset_bottom = 66.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+
+>>>>>>> Stashed changes:MainScene/MainScene.tscn
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
