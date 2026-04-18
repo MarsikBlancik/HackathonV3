@@ -44,7 +44,7 @@ var coins: int = 0
 var is_dashing: bool = false
 var last_direction: Vector2 = Vector2.RIGHT
 var current_velocity: Vector2 = Vector2.ZERO
-var dash_tween: Tween # <--- DODANE: Referencja do Tweena dasha
+var dash_tween: Tween 
 
 # --- MODUŁ ATAKU I AKCJI ---
 @export var is_auto_attack: bool = false 
@@ -58,13 +58,13 @@ var is_parrying: bool = false
 # EFEKTY
 const BLOOD_SCENE = preload("res://EyeCandy/BloodParticles.tscn")
 const BLOOD_STAIN_SCENE = preload("res://EyeCandy/BloodPixels.tscn") 
-const SLASH_TEXTURE = preload("res://Player/Trail.png") # <--- ZMIEŃ NAZWĘ PLIKU!
+const SLASH_TEXTURE = preload("res://Player/Trail.png") 
 
 var ghost_timer: Timer
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D 
 @onready var camera: Camera2D = $Camera2D
-@onready var gadget_manager: Node = $GadgetManager # <--- NOWA REFERENCJA
+@onready var gadget_manager: Node = $GadgetManager 
 
 var shake_strength: float = 0.0
 @export var shake_decay: float = 10.0 
@@ -87,15 +87,14 @@ func _ready() -> void:
 	ghost_timer.timeout.connect(create_dash_ghost)
 	add_child(ghost_timer)
 	
-<<<<<<< HEAD
-	# Tworzymy zegar, który będzie tykał w tle i zrzucał miny
+	# Gadżety
 	mine_timer = Timer.new()
 	mine_timer.timeout.connect(_drop_mine)
 	add_child(mine_timer)
-=======
+	
+	# Animacje
 	if animated_sprite:
 		animated_sprite.animation_finished.connect(_on_animation_finished)
->>>>>>> main
 
 func _process(delta: float) -> void:
 	# 1. Odnawianie energii
@@ -111,27 +110,17 @@ func _process(delta: float) -> void:
 	time_since_last_attack += delta
 	if pipe_bomb_cooldown > 0:
 		pipe_bomb_cooldown -= delta
-	
-<<<<<<< HEAD
 	if molotov_cooldown > 0:
 		molotov_cooldown -= delta
 	
 	# Jeśli włączony jest tryb Auto (klawisz T)
 	if is_auto_attack:
-		# Auto-Atak Mieczem
 		if time_since_last_attack >= attack_cooldown:
 			perform_auto_attack()
-			
-		# Auto-Rzut Granatem
 		if gadget_manager.gadgets["pipe_bomb"] > 0 and pipe_bomb_cooldown <= 0.0:
 			auto_throw_pipe_bomb()
-			
 		if gadget_manager.gadgets["molotov"] > 0 and molotov_cooldown <= 0.0:
 			auto_throw_molotov()
-=======
-	if is_auto_attack and time_since_last_attack >= attack_cooldown:
-		perform_auto_attack()
->>>>>>> main
 	
 	# 3. Ruch
 	var input_direction = Vector2.ZERO
@@ -204,26 +193,18 @@ func _input(event: InputEvent) -> void:
 				throw_molotov(molotov_tier, get_global_mouse_position())
 			
 	if event is InputEventMouseButton and event.pressed:
-		
 		# --- LEWY KLIK: ATAK MIECZEM ---
 		if event.button_index == MOUSE_BUTTON_LEFT:
-<<<<<<< HEAD
-			if not is_auto_attack and time_since_last_attack >= attack_cooldown:
-				attack_towards(get_global_mouse_position())
-				
-		# --- PRAWY KLIK: GRANAT RUROWY ---
-		if event.button_index == MOUSE_BUTTON_RIGHT:
-			var bomb_tier = gadget_manager.gadgets["pipe_bomb"]
-			if bomb_tier > 0 and pipe_bomb_cooldown <= 0.0:
-				# Przekazujemy pozycję myszki jako cel!
-				throw_pipe_bomb(bomb_tier, get_global_mouse_position())
-=======
 			if not is_auto_attack and time_since_last_attack >= attack_cooldown and not is_parrying:
 				attack_towards(get_global_mouse_position())
+				
+		# --- PRAWY KLIK: GRANAT RUROWY LUB PAROWANIE ---
 		elif event.button_index == MOUSE_BUTTON_RIGHT:
-			if not is_dashing and not is_attacking and not is_parrying:
+			var bomb_tier = gadget_manager.gadgets["pipe_bomb"]
+			if bomb_tier > 0 and pipe_bomb_cooldown <= 0.0:
+				throw_pipe_bomb(bomb_tier, get_global_mouse_position())
+			elif not is_dashing and not is_attacking and not is_parrying:
 				perform_parry()
->>>>>>> main
 
 func perform_auto_attack() -> void:
 	var enemies = get_tree().get_nodes_in_group("Enemy")
@@ -243,7 +224,6 @@ func perform_auto_attack() -> void:
 	if closest_enemy != null:
 		attack_towards(closest_enemy.global_position)
 
-# --- ZMIENIONO: attack_towards z nowym trailem na bazie maski (ProgressBar) i przerywaniem dasha ---
 func attack_towards(target_pos: Vector2) -> void:
 	# --- PRZERYWANIE DASHA ATAKIEM ---
 	if is_dashing:
@@ -337,7 +317,6 @@ func perform_dash() -> void:
 		
 	modify_energy(-dash_cost)
 	
-	# Anulujemy atak/parowanie przy uniku
 	is_attacking = false
 	is_parrying = false
 	
@@ -349,8 +328,7 @@ func perform_dash() -> void:
 	if ram_tier > 0:
 		var ram_area = Area2D.new()
 		
-		# 1. OTWIERAMY "OCZY" NASZEGO TARANU NA INNE WARSTWY
-		ram_area.collision_mask = 15 # Każe skanować wszystkie pierwsze 4 warstwy fizyki!
+		ram_area.collision_mask = 15 
 		
 		var collision = CollisionShape2D.new()
 		var circle = CircleShape2D.new()
@@ -360,7 +338,6 @@ func perform_dash() -> void:
 		
 		var hit_enemies = []
 		
-		# 2. WYCIĄGAMY LOGIKĘ DO ZMIENNEJ, ŻEBY PODPIĄĆ JĄ POD CIAŁA I OBSZARY
 		var hit_logic = func(node: Node):
 			var target = node
 			if not target.has_method("take_damage") and target.get_parent() != null and target.get_parent().has_method("take_damage"):
@@ -372,18 +349,14 @@ func perform_dash() -> void:
 				target.take_damage(ram_damage, global_position)
 				apply_hit_stop(0.04) 
 		
-		# 3. PODPINAMY OBA TYPY DETEKCJI (Tak jak zrobiliśmy w minach)
 		ram_area.body_entered.connect(hit_logic)
 		ram_area.area_entered.connect(hit_logic)
 		
 		add_child(ram_area)
 		get_tree().create_timer(dash_duration).timeout.connect(ram_area.queue_free)
-	# -----------------------------------
 	
-	# Klasyczny lot dasha
 	var target_position = position + (last_direction * dash_distance)
 	
-	# --- NOWE: Przypisywanie do zmiennej globalnej ---
 	if dash_tween and dash_tween.is_valid():
 		dash_tween.kill()
 		
@@ -396,8 +369,6 @@ func perform_dash() -> void:
 		ghost_timer.stop() 
 	)
 
-<<<<<<< HEAD
-=======
 func create_dash_ghost() -> void:
 	if not animated_sprite: return
 		
@@ -416,7 +387,6 @@ func create_dash_ghost() -> void:
 	tween.tween_property(ghost, "modulate:a", 0.0, 0.3)
 	tween.finished.connect(ghost.queue_free)
 
->>>>>>> main
 func apply_camera_shake(intensity: float) -> void:
 	shake_strength = intensity
 
@@ -500,35 +470,36 @@ func gain_xp(amount: int) -> void:
 
 func level_up() -> void:
 	level += 1
-<<<<<<< HEAD
-	# Zwiększamy wymagania na kolejny poziom
-=======
->>>>>>> main
 	xp_to_next_level = int(xp_to_next_level * 1.5) 
 	
 	print("Awans! Jesteś na poziomie: ", level)
 	
 	current_hp = max_hp
 	hp_changed.emit(current_hp, max_hp)
-<<<<<<< HEAD
 	leveled_up.emit(level)
 	
-	# --- NOWOŚĆ: LOGIKA WYBORU GADŻETÓW ---
-	# 1. Pobieramy 3 losowe opcje z naszego Mózgu
+	# --- WYBÓR GADŻETÓW ---
 	var upgrade_choices = gadget_manager.get_upgrade_choices()
-	
-	# 2. Zatrzymujemy całkowicie grę (żebyś w spokoju mógł wybrać)
 	get_tree().paused = true
-	
-	# 3. Wysyłamy sygnał w świat. Za chwilę podepniemy do niego nowe UI!
 	show_upgrade_menu.emit(upgrade_choices)
-	
 
+func gain_coins(amount: int) -> void:
+	coins += amount
+	print("Zebrano monety! Masz teraz: ", coins)
+	coins_changed.emit(coins)
+
+func _on_animation_finished() -> void:
+	if animated_sprite:
+		if animated_sprite.animation == "Attack":
+			is_attacking = false
+		elif animated_sprite.animation == "Parry":
+			is_parrying = false
+
+# --- SYSTEM GADŻETÓW ---
 func update_gadgets():
 	var drone_tier = gadget_manager.gadgets["drones"]
 	var mine_tier = gadget_manager.gadgets["mines"]
 	
-	# --- 1. OBSŁUGA DRONÓW ---
 	for child in get_children():
 		if child.is_in_group("Drone"):
 			child.queue_free()
@@ -539,14 +510,12 @@ func update_gadgets():
 		add_child(new_drone)
 		new_drone.setup(drone_tier, (PI * 2 / drone_tier) * i)
 		
-	# --- 2. OBSŁUGA MIN ---
 	if mine_tier > 0:
 		match mine_tier:
-			1: mine_timer.wait_time = 3.0 # Co 3 sekundy
-			2: mine_timer.wait_time = 2.0 # Co 2 sekundy
-			3: mine_timer.wait_time = 1.0 # Maszyna do minowania!
+			1: mine_timer.wait_time = 3.0
+			2: mine_timer.wait_time = 2.0
+			3: mine_timer.wait_time = 1.0
 		
-		# Odpal stoper, jeśli jeszcze nie jest włączony
 		if mine_timer.is_stopped():
 			mine_timer.start()
 
@@ -568,29 +537,9 @@ func _drop_mine():
 			mine.damage = 8 
 			mine.explosion_radius = 180.0
 			
-	# POPRAWIONE SPAWNOWANIE MINY (zamiast current_scene)
 	get_parent().add_child(mine)
 
-# --- PRZYWRÓCONA FUNKCJA DUCHÓW ---
-func create_dash_ghost() -> void:
-	var ghost = Sprite2D.new()
-	ghost.texture = sprite.texture
-	ghost.vframes = sprite.vframes
-	ghost.hframes = sprite.hframes
-	ghost.frame = sprite.frame
-	ghost.flip_h = sprite.flip_h
-	ghost.flip_v = sprite.flip_v
-	ghost.global_scale = sprite.global_scale
-	ghost.global_position = sprite.global_position
-	ghost.modulate = Color(0.2, 0.5, 1.0, 0.7)
-	
-	get_parent().add_child(ghost)
-	
-	var tween = create_tween()
-	tween.tween_property(ghost, "modulate:a", 0.0, 0.3)
-	tween.finished.connect(ghost.queue_free)
-
-func throw_pipe_bomb(tier: int, target_pos: Vector2) -> void: # <--- DODANO target_pos
+func throw_pipe_bomb(tier: int, target_pos: Vector2) -> void:
 	if not PIPEBOMB_SCENE: return
 	
 	match tier:
@@ -601,7 +550,6 @@ func throw_pipe_bomb(tier: int, target_pos: Vector2) -> void: # <--- DODANO targ
 	var bomb = PIPEBOMB_SCENE.instantiate()
 	get_parent().add_child(bomb)
 	
-	# Zamiast szukać myszki, rzucamy w podany punkt!
 	bomb.throw_bomb(global_position, target_pos, tier)
 	
 func auto_throw_pipe_bomb() -> void:
@@ -609,7 +557,7 @@ func auto_throw_pipe_bomb() -> void:
 	if enemies.is_empty(): return
 	
 	var closest_enemy = null
-	var min_distance = 600.0 # Granat ma dużo większy zasięg auto-namierzania niż miecz!
+	var min_distance = 600.0 
 	
 	for enemy in enemies:
 		if not is_instance_valid(enemy): continue
@@ -621,13 +569,11 @@ func auto_throw_pipe_bomb() -> void:
 			
 	if closest_enemy != null:
 		var bomb_tier = gadget_manager.gadgets["pipe_bomb"]
-		# Rzucamy w pozycję namierzonego wroga!
 		throw_pipe_bomb(bomb_tier, closest_enemy.global_position)
 
 func throw_molotov(tier: int, target_pos: Vector2) -> void:
 	if not MOLOTOV_SCENE: return
 	
-	# Cooldown maleje z ulepszeniami
 	match tier:
 		1: molotov_cooldown = 6.0
 		2: molotov_cooldown = 4.0
@@ -654,20 +600,3 @@ func auto_throw_molotov() -> void:
 	if closest_enemy != null:
 		var tier = gadget_manager.gadgets["molotov"]
 		throw_molotov(tier, closest_enemy.global_position)
-=======
-	
-	leveled_up.emit(level)
-	
-func gain_coins(amount: int) -> void:
-	coins += amount
-	print("Zebrano monety! Masz teraz: ", coins)
-	coins_changed.emit(coins)
-
-# --- Resetuje stan akcji po zakończeniu animacji ---
-func _on_animation_finished() -> void:
-	if animated_sprite:
-		if animated_sprite.animation == "Attack":
-			is_attacking = false
-		elif animated_sprite.animation == "Parry":
-			is_parrying = false
->>>>>>> main

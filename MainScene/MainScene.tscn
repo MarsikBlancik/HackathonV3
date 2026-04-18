@@ -76,6 +76,8 @@ theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="LevelUpMenu" parent="UI" unique_id=1953657605 instance=ExtResource("6_431t1")]
+
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=914282549]
