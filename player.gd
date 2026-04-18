@@ -226,6 +226,11 @@ func apply_hit_stop(duration: float) -> void:
 	Engine.time_scale = 1.0
 
 func modify_hp(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
+	# --- NOWOŚĆ: Nietykalność podczas dasha (i-frames) ---
+	if amount < 0 and is_dashing:
+		print("Dodge! Uniknięto ataku.")
+		return # Przerwane! Kod poniżej się nie wykona, gracz nie dostaje obrażeń.
+
 	current_hp = clampi(current_hp + amount, 0, max_hp)
 	hp_changed.emit(current_hp, max_hp)
 	
@@ -257,4 +262,4 @@ func modify_energy(amount: int) -> void:
 
 func die() -> void:
 	Engine.time_scale = 1.0
-	get_tree().change_scene_to_file("res://Restart.tscn")
+	get_tree().change_scene_to_file("res://game_over_menu.tscn")
