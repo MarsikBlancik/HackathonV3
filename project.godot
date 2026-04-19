@@ -10,10 +10,11 @@ config_version=5
 
 [application]
 
-config/name="bullethell"
+config/name="Blood & Rust"
 run/main_scene="uid://b0d27yt5a6qc3"
 config/features=PackedStringArray("4.6", "GL Compatibility")
-config/icon="res://icon.svg"
+boot_splash/image="uid://cmv10stj5r4bw"
+config/icon="uid://dyse6sbh723li"
 
 [display]
 
