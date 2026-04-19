@@ -1,8 +1,14 @@
 [gd_scene format=3 uid="uid://conxxkjs4hhsj"]
 
 [ext_resource type="Script" uid="uid://bgaf35s2lqp47" path="res://Player/player.gd" id="1_xhfnw"]
+[ext_resource type="AudioStream" uid="uid://c4i5ilppiatu3" path="res://Player/766480__rtyrtyrtyrtyrtyrtyrtyrty__knife-slash-spike-trap-sharp-sound-4.mp3" id="2_8g4oa"]
+[ext_resource type="AudioStream" uid="uid://bprs525llrtvk" path="res://Player/714258__qubodup__cloud-poof.wav" id="3_6ysni"]
 [ext_resource type="Script" uid="uid://hkfv6afvt4pg" path="res://Player/gadget_manager.gd" id="3_gadget"]
 [ext_resource type="Texture2D" uid="uid://b6oaie0eui7uk" path="res://Player/Gemini_Generated_Image_ebo6l5ebo6l5ebo6-Photoroom (1).png" id="3_tok1r"]
+[ext_resource type="AudioStream" uid="uid://fg5vjy7w4j" path="res://Player/770124__ienba__big-character-gruntsuylgfjdtnh.wav" id="4_6ysni"]
+[ext_resource type="AudioStream" uid="uid://b3seddrfvk7yy" path="res://Player/545201__theplax__pop-1.wav" id="5_vlldt"]
+[ext_resource type="AudioStream" uid="uid://vshfm3rwdysu" path="res://Player/166184__drminky__retro-coin-collect.wav" id="6_j23h2"]
+[ext_resource type="AudioStream" uid="uid://c6riaeh5y3k4w" path="res://Player/337049__shinephoenixstormcrow__320655__rhodesmas__level-up-01.mp3" id="7_0j2ni"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kpjcp"]
 radius = 9.333334
@@ -109,6 +115,12 @@ animations = [{
 [node name="Node2D" type="Node2D" unique_id=56556000 groups=["Player"]]
 z_index = 2000
 script = ExtResource("1_xhfnw")
+attack_sound = ExtResource("2_8g4oa")
+dash_sound = ExtResource("3_6ysni")
+hurt_sound = ExtResource("4_6ysni")
+xp_sound = ExtResource("5_vlldt")
+coin_sound = ExtResource("6_j23h2")
+level_up_sound = ExtResource("7_0j2ni")
 
 [node name="CharacterBody2D" type="CharacterBody2D" parent="." unique_id=570689020 groups=["Player"]]
 

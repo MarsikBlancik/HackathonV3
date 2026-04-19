@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://dff7ow4nfmpvf" path="res://XP/XP_Gem.tscn" id="2_2hac7"]
 [ext_resource type="PackedScene" uid="uid://btls1xn1cerx1" path="res://Coin/Coin.tscn" id="3_biruh"]
 [ext_resource type="Texture2D" uid="uid://dco555m3phk6e" path="res://Enemies/DefaultZombie/Adobe Express - file (2).png" id="4_jcwuj"]
+[ext_resource type="AudioStream" uid="uid://by6shok3gbt7t" path="res://Enemies/163447__under7dude__zombie-hit.wav" id="4_n1bor"]
+[ext_resource type="AudioStream" uid="uid://gmmu7pvkx4s0" path="res://Enemies/541633__dreadwolf910__zombie_014.wav" id="5_a5aut"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_s7bn3"]
 size = Vector2(83, 129)
@@ -82,7 +84,8 @@ animations = [{
 script = ExtResource("1_s7bn3")
 xp_gem_scene = ExtResource("2_2hac7")
 coin_scene = ExtResource("3_biruh")
-attack_windup_time = 0.2
+hurt_sound = ExtResource("4_n1bor")
+attack_sound = ExtResource("5_a5aut")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=467901982]
 visible = false

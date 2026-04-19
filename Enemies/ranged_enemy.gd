@@ -20,15 +20,21 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 # --- EFEKTY ---
 const BLOOD_SCENE = preload("res://EyeCandy/BloodParticles.tscn")
 
+# --- DŹWIĘK ---
+@export var hurt_sound: AudioStream 
+@export var attack_sound: AudioStream # <--- NOWE: Plik dźwiękowy dla ataku (strzału)
+var sfx_hurt: AudioStreamPlayer
+var sfx_attack: AudioStreamPlayer # <--- NOWE: Odtwarzacz dźwięku ataku
+
 # --- ZMIENNE POMOCNICZE ---
 var player: Node2D = null
 var time_since_last_attack: float = 0.0
-var is_attacking: bool = false # <--- NOWE: Blokada animacji
+var is_attacking: bool = false
 const MAGNET_SCENE = preload("res://Magnet.tscn") 
 var magnet_drop_chance: float = 0.015 # 1.5% szansy
 
 # --- WĘZŁY ---
-@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D # <--- NOWE: Referencja do Sprite'a
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 func _ready() -> void:
 	add_to_group("Enemy")
@@ -40,6 +46,18 @@ func _ready() -> void:
 	# Podpinamy sygnał końca animacji
 	if animated_sprite:
 		animated_sprite.animation_finished.connect(_on_animation_finished)
+		
+	# Konfiguracja odtwarzacza dźwięku obrażeń
+	sfx_hurt = AudioStreamPlayer.new()
+	add_child(sfx_hurt)
+	if hurt_sound:
+		sfx_hurt.stream = hurt_sound
+		
+	# --- NOWE: Konfiguracja odtwarzacza dźwięku ataku ---
+	sfx_attack = AudioStreamPlayer.new()
+	add_child(sfx_attack)
+	if attack_sound:
+		sfx_attack.stream = attack_sound
 
 func _process(delta: float) -> void:
 	if is_instance_valid(player):
@@ -61,7 +79,7 @@ func _process(delta: float) -> void:
 			# Jeśli atakuje, aplikuj tylko knockback
 			global_position += knockback_velocity * delta
 			
-		# --- NOWE: SYSTEM ANIMACJI ---
+		# 4. SYSTEM ANIMACJI
 		if animated_sprite and not is_attacking:
 			# Obracanie w stronę gracza
 			animated_sprite.flip_h = direction.x < 0
@@ -70,9 +88,8 @@ func _process(delta: float) -> void:
 				animated_sprite.play("Walk")
 			else:
 				animated_sprite.play("default")
-		# -----------------------------
 			
-		# 4. Logika atakowania
+		# 5. Logika atakowania
 		time_since_last_attack += delta
 		
 		# Strzela, jeśli jest w miarę blisko swojej strefy zatrzymania i nie jest w trakcie innego ataku
@@ -82,10 +99,14 @@ func _process(delta: float) -> void:
 
 func perform_attack() -> void:
 	time_since_last_attack = 0.0
-	is_attacking = true # <--- NOWE: Rozpoczęcie ataku
+	is_attacking = true
 	
 	if animated_sprite:
 		animated_sprite.play("Attack")
+		
+	# --- NOWE: Odtwarzanie dźwięku ataku (strzału) ---
+	if sfx_attack.stream:
+		sfx_attack.play()
 	
 	if projectile_scene != null:
 		var projectile = projectile_scene.instantiate()
@@ -105,6 +126,10 @@ func perform_attack() -> void:
 func take_damage(amount: int, source_position: Vector2) -> void:
 	hp -= amount
 	
+	# Odtwarzanie dźwięku przy otrzymaniu obrażeń
+	if sfx_hurt.stream:
+		sfx_hurt.play()
+	
 	spawn_damage_number(abs(amount))
 	
 	# 1. Knockback 
@@ -116,9 +141,10 @@ func take_damage(amount: int, source_position: Vector2) -> void:
 		player.apply_camera_shake(8.0) 
 		
 	# 3. Generowanie krwi
-	var blood = BLOOD_SCENE.instantiate()
-	blood.global_position = global_position 
-	get_parent().add_child(blood) 
+	if BLOOD_SCENE:
+		var blood = BLOOD_SCENE.instantiate()
+		blood.global_position = global_position 
+		get_parent().add_child(blood) 
 	
 	# 4. Rozbłyśnięcie na biało
 	modulate = Color(5.0, 5.0, 5.0) 
@@ -163,13 +189,14 @@ func die() -> void:
 		magnet.global_position += random_offset
 		
 		get_parent().call_deferred("add_child", magnet)
+		
 	# Wyrzucanie XP
 	if xp_gem_scene != null:
 		var gem = xp_gem_scene.instantiate()
 		gem.global_position = global_position
 		get_tree().current_scene.call_deferred("add_child", gem)
 		
-	# --- NOWE: Wyrzucanie od 1 do 3 monet ---
+	# Wyrzucanie od 1 do 3 monet
 	if coin_scene != null:
 		var coin_count = randi_range(1, 3)
 		for i in range(coin_count):
@@ -181,7 +208,7 @@ func die() -> void:
 	
 	queue_free()
 
-# --- NOWE: Resetowanie ataku po zakończeniu animacji ---
+# Resetowanie ataku po zakończeniu animacji
 func _on_animation_finished() -> void:
 	if animated_sprite and animated_sprite.animation == "Attack":
 		is_attacking = false

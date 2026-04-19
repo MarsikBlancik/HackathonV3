@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
 [ext_resource type="Texture2D" uid="uid://ctjodyvhmp51n" path="res://MainScene/HpBar.png" id="6_j30su"]
 [ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
-[ext_resource type="Script" path="res://minimap.gd" id="8_6tdih"]
+[ext_resource type="Script" uid="uid://c03pwkosa0p0b" path="res://minimap.gd" id="8_6tdih"]
 [ext_resource type="Texture2D" uid="uid://cbrjo7ih1h5vl" path="res://MainScene/fillbar.png" id="11_80vrr"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_66t8v"]

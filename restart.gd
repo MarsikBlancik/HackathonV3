@@ -1,7 +1,18 @@
 extends Control
 
+@export var defeat_music: AudioStream # <--- NOWE: Muzyka porażki do przypisania w Inspektorze
+var music_player: AudioStreamPlayer # <--- NOWE: Odtwarzacz muzyki
 
 func _ready() -> void:
+	# --- NOWE: Konfiguracja i odtwarzanie muzyki ---
+	music_player = AudioStreamPlayer.new()
+	add_child(music_player)
+	
+	if defeat_music:
+		music_player.stream = defeat_music
+		music_player.play()
+	# -----------------------------------------------
+
 	var BtnRestart = $VBoxContainer/Restart
 	var BtnMainMenu = $VBoxContainer/MainMenu
 	

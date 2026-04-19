@@ -42,7 +42,7 @@ var coins: int = 0
 # 3. MODUŁ RUCHU
 @export var speed: float = 200.0
 @export var acceleration: float = 15.0 
-@export var friction: float = 15.0      
+@export var friction: float = 15.0        
 @export var dash_distance: float = 150.0
 @export var dash_duration: float = 0.2
 
@@ -60,6 +60,21 @@ var time_since_last_attack: float = 100.0
 var is_attacking: bool = false 
 var is_parrying: bool = false 
 
+# --- MODUŁ DŹWIĘKU ---
+@export var attack_sound: AudioStream
+@export var dash_sound: AudioStream
+@export var hurt_sound: AudioStream 
+@export var xp_sound: AudioStream
+@export var coin_sound: AudioStream # <--- NOWE: Dźwięk monety
+@export var level_up_sound: AudioStream # <--- NOWE: Dźwięk Level Up
+
+var sfx_attack: AudioStreamPlayer
+var sfx_dash: AudioStreamPlayer
+var sfx_hurt: AudioStreamPlayer 
+var sfx_xp: AudioStreamPlayer
+var sfx_coin: AudioStreamPlayer # <--- NOWE: Odtwarzacz dla dźwięku monety
+var sfx_level_up: AudioStreamPlayer # <--- NOWE: Odtwarzacz dla dźwięku Level Up
+
 # EFEKTY
 const BLOOD_SCENE = preload("res://EyeCandy/BloodParticles.tscn")
 const BLOOD_STAIN_SCENE = preload("res://EyeCandy/BloodPixels.tscn") 
@@ -68,7 +83,7 @@ const SLASH_TEXTURE = preload("res://Player/Trail.png")
 var ghost_timer: Timer
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D 
-@onready var shadow_sprite: AnimatedSprite2D = $AnimatedSprite2D2 # <--- NOWE: Referencja do cienia
+@onready var shadow_sprite: AnimatedSprite2D = $AnimatedSprite2D2 
 @onready var camera: Camera2D = $Camera2D
 @onready var gadget_manager: Node = $GadgetManager 
 
@@ -97,6 +112,39 @@ func _ready() -> void:
 	mine_timer = Timer.new()
 	mine_timer.timeout.connect(_drop_mine)
 	add_child(mine_timer)
+	
+	# Konfiguracja odtwarzaczy audio
+	sfx_attack = AudioStreamPlayer.new()
+	add_child(sfx_attack)
+	if attack_sound:
+		sfx_attack.stream = attack_sound
+
+	sfx_dash = AudioStreamPlayer.new()
+	add_child(sfx_dash)
+	if dash_sound:
+		sfx_dash.stream = dash_sound
+		
+	sfx_hurt = AudioStreamPlayer.new()
+	add_child(sfx_hurt)
+	if hurt_sound:
+		sfx_hurt.stream = hurt_sound
+
+	sfx_xp = AudioStreamPlayer.new()
+	add_child(sfx_xp)
+	if xp_sound:
+		sfx_xp.stream = xp_sound
+		
+	# --- NOWE: Konfiguracja odtwarzacza monety ---
+	sfx_coin = AudioStreamPlayer.new()
+	add_child(sfx_coin)
+	if coin_sound:
+		sfx_coin.stream = coin_sound
+		
+	# --- NOWE: Konfiguracja odtwarzacza Level Up ---
+	sfx_level_up = AudioStreamPlayer.new()
+	add_child(sfx_level_up)
+	if level_up_sound:
+		sfx_level_up.stream = level_up_sound
 	
 	# Animacje
 	if animated_sprite:
@@ -168,7 +216,7 @@ func _process(delta: float) -> void:
 		else:
 			animated_sprite.play("default")
 			
-	# --- NOWE: SYNCHRONIZACJA CIENIA ---
+	# --- SYNCHRONIZACJA CIENIA ---
 	if shadow_sprite and animated_sprite:
 		shadow_sprite.animation = animated_sprite.animation
 		shadow_sprite.frame = animated_sprite.frame
@@ -236,7 +284,6 @@ func perform_auto_attack() -> void:
 	if closest_enemy != null:
 		attack_towards(closest_enemy.global_position)
 
-# --- NOWOŚĆ: FUNKCJA OBLICZAJĄCA OBRAŻENIA I KRYTYKI ---
 func get_calculated_damage(custom_base_dmg: int = 0) -> Dictionary:
 	var dmg_to_calc = custom_base_dmg if custom_base_dmg > 0 else base_damage
 	var final_dmg = dmg_to_calc
@@ -261,6 +308,11 @@ func attack_towards(target_pos: Vector2) -> void:
 	var attack_direction = (target_pos - global_position).normalized()
 	
 	is_attacking = true
+	
+	# Odtwórz dźwięk ataku
+	if sfx_attack.stream:
+		sfx_attack.play()
+	
 	if animated_sprite:
 		animated_sprite.play("Attack")
 		animated_sprite.flip_h = attack_direction.x < 0
@@ -268,7 +320,6 @@ func attack_towards(target_pos: Vector2) -> void:
 	var base_angle = attack_direction.angle()
 	var attack_distance = 50.0 
 	
-	# --- NOWY SYSTEM TRAILU: Węzeł paska postępu jako maska ---
 	var slash = TextureProgressBar.new()
 	slash.texture_progress = SLASH_TEXTURE
 	
@@ -323,12 +374,11 @@ func attack_towards(target_pos: Vector2) -> void:
 
 		var target = area.get_parent()
 		if target != null and target.has_method("take_damage"):
-			# Użycie nowej funkcji zadawania obrażeń!
 			var dmg_data = get_calculated_damage()
 			target.take_damage(dmg_data.damage, global_position)
 			
 			if dmg_data.is_crit:
-				print("KRYTYK! Zadano: ", dmg_data.damage) # Opcjonalnie: możemy później dodać tu czerwony numerek obrażeń
+				print("KRYTYK! Zadano: ", dmg_data.damage) 
 				
 			apply_hit_stop(0.05)
 	)
@@ -351,6 +401,11 @@ func perform_dash() -> void:
 	is_parrying = false
 	
 	is_dashing = true
+	
+	# Odtwórz dźwięk dasha
+	if sfx_dash.stream:
+		sfx_dash.play()
+	
 	ghost_timer.start() 
 	
 	# --- GADŻET TARANOWANIA ---
@@ -376,7 +431,6 @@ func perform_dash() -> void:
 			if target.is_in_group("Enemy") and target.has_method("take_damage") and not target in hit_enemies:
 				hit_enemies.append(target)
 				
-				# Taranowanie również może być krytyczne!
 				var ram_base_dmg = ram_tier * 2 
 				var dmg_data = get_calculated_damage(ram_base_dmg)
 				
@@ -440,6 +494,9 @@ func modify_hp(amount: int, source_position: Vector2 = Vector2.ZERO) -> void:
 	spawn_damage_number(abs(amount))
 	
 	if amount < 0:
+		if sfx_hurt.stream:
+			sfx_hurt.play()
+			
 		apply_camera_shake(15.0)
 		apply_hit_stop(0.08)
 		
@@ -496,6 +553,9 @@ func gain_xp(amount: int) -> void:
 	current_xp += amount
 	print("Zdobyto ", amount, " XP!")
 	
+	if sfx_xp.stream:
+		sfx_xp.play()
+	
 	while current_xp >= xp_to_next_level:
 		current_xp -= xp_to_next_level
 		level_up()
@@ -507,6 +567,10 @@ func level_up() -> void:
 	xp_to_next_level = int(xp_to_next_level * 1.5) 
 	
 	print("Awans! Jesteś na poziomie: ", level)
+	
+	# --- NOWE: Odtwarzanie dźwięku Level Up ---
+	if sfx_level_up.stream:
+		sfx_level_up.play()
 	
 	current_hp = max_hp
 	hp_changed.emit(current_hp, max_hp)
@@ -520,6 +584,11 @@ func level_up() -> void:
 func gain_coins(amount: int) -> void:
 	coins += amount
 	print("Zebrano monety! Masz teraz: ", coins)
+	
+	# --- NOWE: Odtwarzanie dźwięku Monety ---
+	if sfx_coin.stream:
+		sfx_coin.play()
+		
 	coins_changed.emit(coins)
 
 # --- SYSTEM EKONOMII I ULEPSZEŃ ---

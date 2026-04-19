@@ -9,7 +9,7 @@ extends Node2D
 # --- USTAWIENIA ATAKU ---
 @export var attack_damage: int = 1
 @export var attack_cooldown: float = 1.0 # Czas między atakami
-@export var attack_windup_time: float = 0.5 # <--- NOWE: Czas "ładowania" (szykowania się) do ataku
+@export var attack_windup_time: float = 0.5 # Czas "ładowania" (szykowania się) do ataku
 
 # --- STATYSTYKI PRZECIWNIKA ---
 @export var hp: int = 3 
@@ -22,6 +22,12 @@ var knockback_velocity: Vector2 = Vector2.ZERO
 const BLOOD_SCENE = preload("res://EyeCandy/BloodParticles.tscn")
 const BLOOD_STAIN_SCENE = preload("res://EyeCandy/BloodPixels.tscn")
 
+# --- DŹWIĘK ---
+@export var hurt_sound: AudioStream # Plik dźwiękowy dla obrażeń
+@export var attack_sound: AudioStream # <--- NOWE: Plik dźwiękowy dla ataku
+var sfx_hurt: AudioStreamPlayer
+var sfx_attack: AudioStreamPlayer # <--- NOWE: Odtwarzacz dźwięku ataku
+
 # --- ZMIENNE POMOCNICZE ---
 var player: Node2D = null
 var time_since_last_attack: float = 0.0
@@ -32,7 +38,7 @@ var magnet_drop_chance: float = 0.015 # 1.5% szansy na wypadnięcie magnesu
 # --- ZMIENNE ANIMACJI I STANÓW ---
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 var is_attacking: bool = false
-var is_winding_up: bool = false # <--- NOWE: Czy wróg aktualnie "ładuje" atak
+var is_winding_up: bool = false # Czy wróg aktualnie "ładuje" atak
 
 func _ready() -> void:
 	add_to_group("Enemy")
@@ -44,6 +50,18 @@ func _ready() -> void:
 		
 	if animated_sprite:
 		animated_sprite.animation_finished.connect(_on_animation_finished)
+		
+	# Konfiguracja odtwarzacza dźwięku obrażeń
+	sfx_hurt = AudioStreamPlayer.new()
+	add_child(sfx_hurt)
+	if hurt_sound:
+		sfx_hurt.stream = hurt_sound
+
+	# --- NOWE: Konfiguracja odtwarzacza dźwięku ataku ---
+	sfx_attack = AudioStreamPlayer.new()
+	add_child(sfx_attack)
+	if attack_sound:
+		sfx_attack.stream = attack_sound
 
 func _process(delta: float) -> void:
 	if is_instance_valid(player):
@@ -83,7 +101,7 @@ func _process(delta: float) -> void:
 				if time_since_last_attack >= attack_cooldown:
 					start_attack_windup()
 
-# --- NOWE: TELEGRAFOWANIE ATAKU (ŁADOWANIE) ---
+# --- TELEGRAFOWANIE ATAKU (ŁADOWANIE) ---
 func start_attack_windup() -> void:
 	is_winding_up = true
 	time_since_last_attack = 0.0 
@@ -103,7 +121,7 @@ func start_attack_windup() -> void:
 	indicator.color = Color(1.0, 0.1, 0.1, 1.0) # Krwisto czerwony
 	indicator.modulate.a = 0.1 # Zaczynamy od prawie niewidocznego
 	
-	# --- POPRAWKA: Zamiast z_index = -1, chowamy to tylko pod sprite wroga ---
+	# Chowamy to tylko pod sprite wroga
 	indicator.show_behind_parent = true 
 	
 	# Obracamy wskaźnik tak, aby patrzył na gracza
@@ -132,6 +150,10 @@ func perform_attack() -> void:
 	
 	if animated_sprite:
 		animated_sprite.play("Attack")
+		
+	# --- NOWE: Odtwarzanie dźwięku ataku ---
+	if sfx_attack.stream:
+		sfx_attack.play()
 	
 	# Sprawdzamy czy gracz na pewno nie zdążył uciec z zasięgu przez to pół sekundy!
 	# Dajemy mu drobną taryfę ulgową (+20 do dystansu), żeby unik musiał być faktycznie unikiem.
@@ -145,6 +167,10 @@ func perform_attack() -> void:
 func take_damage(amount: int, source_position: Vector2) -> void:
 	hp -= amount
 	print("Przeciwnik dostał! Zostało mu ", hp, " HP.")
+	
+	# Odtwarzanie dźwięku przy otrzymaniu obrażeń
+	if sfx_hurt.stream:
+		sfx_hurt.play()
 	
 	spawn_damage_number(abs(amount))
 	
@@ -213,7 +239,7 @@ func die() -> void:
 		gem.global_position = global_position
 		get_tree().current_scene.call_deferred("add_child", gem)
 		
-	# --- NOWE: Wyrzucanie od 1 do 3 monet ---
+	# Wyrzucanie od 1 do 3 monet
 	if coin_scene != null:
 		var coin_count = randi_range(1, 3)
 		for i in range(coin_count):

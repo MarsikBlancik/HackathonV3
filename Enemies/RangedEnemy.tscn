@@ -4,7 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://dff7ow4nfmpvf" path="res://XP/XP_Gem.tscn" id="2_8ir81"]
 [ext_resource type="PackedScene" uid="uid://cr1l6cs510xaf" path="res://Projectiles/Projectile.tscn" id="2_smfiu"]
 [ext_resource type="PackedScene" uid="uid://btls1xn1cerx1" path="res://Coin/Coin.tscn" id="3_ytok2"]
+[ext_resource type="AudioStream" uid="uid://by6shok3gbt7t" path="res://Enemies/163447__under7dude__zombie-hit.wav" id="5_xde2i"]
 [ext_resource type="Texture2D" uid="uid://c0woypw8mahg2" path="res://Enemies/RangedZombie/RangedZombie-Photoroom.png" id="5_ytok2"]
+[ext_resource type="AudioStream" uid="uid://bxt15dlww47vv" path="res://Enemies/155901__tiptoe84__spit.wav" id="6_4a7lu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_smfiu"]
 size = Vector2(90, 120)
@@ -88,6 +90,8 @@ script = ExtResource("1_o20mk")
 xp_gem_scene = ExtResource("2_8ir81")
 coin_scene = ExtResource("3_ytok2")
 projectile_scene = ExtResource("2_smfiu")
+hurt_sound = ExtResource("5_xde2i")
+attack_sound = ExtResource("6_4a7lu")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=519956906]
 
