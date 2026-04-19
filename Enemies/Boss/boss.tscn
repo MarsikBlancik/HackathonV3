@@ -145,6 +145,7 @@ scale = Vector2(0.66235924, 0.66235924)
 texture = ExtResource("2_crsr5")
 
 [node name="Hitbox" type="Area2D" parent="." unique_id=891675244]
+z_index = -1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1032865226]
 position = Vector2(17.5, -8.5)
@@ -155,4 +156,4 @@ position = Vector2(3, -54.000004)
 scale = Vector2(0.5401734, 0.5401735)
 sprite_frames = SubResource("SpriteFrames_eooyi")
 animation = &"Walk"
-frame_progress = 0.38896865
+frame_progress = 0.13389774
