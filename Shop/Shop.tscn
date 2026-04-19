@@ -41,37 +41,57 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_ssic7")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ShopUI/Panel" unique_id=1361339095]
+[node name="CoinLabel" type="Label" parent="ShopUI/Panel" unique_id=600652759]
+layout_mode = 0
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 76.0
+offset_bottom = 22.0
+text = "Monety: 0"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ShopUI/Panel" unique_id=723436773]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -754.0
+offset_top = -417.5
+offset_right = 754.0
+offset_bottom = 417.5
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
 
-[node name="Button1" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=810738305]
+[node name="UpgradesRow" type="HBoxContainer" parent="ShopUI/Panel/VBoxContainer" unique_id=721745828]
+layout_mode = 2
+
+[node name="Button1" type="Button" parent="ShopUI/Panel/VBoxContainer/UpgradesRow" unique_id=810738305]
 custom_minimum_size = Vector2(500, 800)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
 
-[node name="Button2" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=1517793296]
+[node name="Button2" type="Button" parent="ShopUI/Panel/VBoxContainer/UpgradesRow" unique_id=1517793296]
 custom_minimum_size = Vector2(500, 800)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
 
-[node name="Button3" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=251814544]
+[node name="Button3" type="Button" parent="ShopUI/Panel/VBoxContainer/UpgradesRow" unique_id=251814544]
 custom_minimum_size = Vector2(500, 800)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 4
 
-[node name="Button4" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=73918647]
+[node name="ActionsRow" type="HBoxContainer" parent="ShopUI/Panel/VBoxContainer" unique_id=362788316]
+layout_mode = 2
+alignment = 1
+
+[node name="Button4" type="Button" parent="ShopUI/Panel/VBoxContainer/ActionsRow" unique_id=73918647]
 layout_mode = 2
 
-[node name="Button5" type="Button" parent="ShopUI/Panel/HBoxContainer" unique_id=2014573400]
+[node name="Button5" type="Button" parent="ShopUI/Panel/VBoxContainer/ActionsRow" unique_id=2014573400]
 layout_mode = 2
 text = "Odśwież"
 
