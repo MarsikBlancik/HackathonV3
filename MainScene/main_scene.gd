@@ -126,7 +126,7 @@ func _on_game_timer_timeout() -> void:
 	if elapsed_seconds % 120 == 0:
 		spawn_shop()
 		
-	if elapsed_seconds == 600: 
+	if elapsed_seconds == 180: 
 		spawn_boss()
 
 func _on_despawn_timer_timeout() -> void:

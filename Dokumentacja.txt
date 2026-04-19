@@ -1,0 +1,37 @@
+1. Mechanika i Statystyki Gracza (player.gd)
+Zarządzanie zasobami: Postać w grze zarządza głównymi zasobami takimi jak: punkty zdrowia (HP), energia, punkty doświadczenia (XP) oraz monety.
+
+Walka i atakowanie: Gracz może uderzać wrogów za pomocą miecza. Posiada początkową, 5-procentową szansę na uderzenie krytyczne, które podwaja zadawane przeciwnikom obrażenia.
+
+Sterowanie: Wciśnięcie lewego przycisku myszy skutkuje atakiem podstawowym, natomiast prawy przycisk służy do wyrzucania bomby rurowej lub aktywowania parowania ataków przeciwnika. Tryb auto-ataku można opcjonalnie przełączać w zależności od preferencji gracza.
+
+Hitboxy ataku: Pole rażenia broni białej obsługiwane jest poprzez dynamicznie tworzony obszar kolizji w kształcie prostokąta, o wielkości 120x180 jednostek. W trakcie celnego trafienia ze zmodyfikowanym parametrem krytycznym, skrypt informuje gracza o zwiększonych obrażeniach.
+
+Uniki (Dashing): Mechanika uniku konsumuje punkty energii, a ulepszenie gadżetu taranującego podczas uniku wywołuje dodatkowy obszar zadający obrażenia wrogom wokół gracza. Poprawne użycie uniku lub zablokowanie (parowanie) uchroni gracza przed utratą zdrowia po wrogim ataku.
+
+System awansu (Leveling): Gracz powiększa swój próg do osiągnięcia kolejnego poziomu, po uprzednim zdobyciu dostatecznej liczby XP. Procesowi awansu towarzyszą wywoływane efekty dźwiękowe.
+
+Ekonomia i ulepszenia: Zebrana w rozgrywce waluta służy m.in. do zakupu stałych ulepszeń, takich jak podniesienie maksymalnej ilości punktów zdrowia. System dynamicznie ładuje także uprzednio zdobyte gadżety – w tym ulepszenia min i dostosowuje czas ich użycia.
+
+2. Zachowanie Przeciwników (enemy.gd)
+Poruszanie: Pętla decyzyjna wroga śledzi dystans od gracza i obiera kurs w jego stronę do momentu osiągnięcia wymaganej odległości zatrzymania i wycelowania.
+
+Telegrafowanie i obrona: Proces ładowania ataku przed jego finalnym wykonaniem widoczny jest dla użytkownika za pomocą rozwijającego się wskaźnika strefy ciosu (czerwony poligon).
+
+Utrata HP przez gracza: Po wyznaczonym czasie ładowania i sprawdzeniu dystansu uderzenie zadaje graczowi bazową wartość obrażeń danego wroga.
+
+Skrzynia i Monety: Ginący na mapie wrogowie upuszczają od 1 do 3 monet (jako wbudowany randomizator nagród). Ponadto, każda likwidacja wroga niesie 1.5% szansy na wyrzucenie magnesu, używanego do ściągania przedmiotów.
+
+3. Cykl Rozgrywki (main_scene.gd)
+Brama startowa: Każda próba i odpalenie mechanik rozpoczyna sekwencję wirtualnie otwierającej i trzęsącej się bramy.
+
+Pojawianie się sklepu: Upływ czasu wewnątrz gry kontrolowany jest na bieżąco, a skrypt generuje specjalne zdarzenia: co równe 120 sekund czasu w świecie, obok gracza zostanie ulokowany moduł sklepu.
+
+Respawn Bossa: Wyzwanie ostateczne jest ograniczone czasowo i wywołuje na mapie wygenerowanie jednostki przypisanej dla bossa równo po osiągnięciu 600 sekund przetrwania przez uczestnika.
+
+4. Drzewko Gadżetów (gadget_manager.gd)
+Klasyfikacja zasobów inwentarza: Silnik pozwala udostępniać i rozwijać gadżety należące do 5 rzędów: drony, pola minowe, atak z uniku (dash_ram), rzuty bombą rurową oraz obszarowe mołotowy.
+
+Maksymalny limit mocy: Niezależnie od trybu ulepszenia i ilości posiadanego zasobu, stopień ulepszeń nie może przekroczyć narzuconego progu wynoszącego maksymalnie 3 poziom (MAX_TIER) dla każdego atutu.
+
+Wykorzystanie rzucanych obiektów: Funkcja u gracza pozwala zautomatyzować wymierzanie rzutów m.in. dla posiadanych odłamkowych bomb rurowych w kierunku istniejących na instancji wrogów.
