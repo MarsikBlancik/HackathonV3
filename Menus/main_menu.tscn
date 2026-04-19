@@ -4,6 +4,7 @@
 [ext_resource type="AudioStream" uid="uid://dr8hsoca0afs1" path="res://Menus/415912__okieactor__heathers-gunshot-effect2.wav" id="2_at0u2"]
 [ext_resource type="Texture2D" uid="uid://q1etn5xvgg3h" path="res://Menus/ButtonMenu.png" id="2_p3jrs"]
 [ext_resource type="Texture2D" uid="uid://ddflmpd2qq20n" path="res://Menus/Gemini_Generated_Image_hfnm65hfnm65hfnm.png" id="3_11gta"]
+[ext_resource type="AudioStream" uid="uid://e4xv034c6aa5" path="res://Menus/Where_the_Concrete_Sleeps.mp3" id="3_cxdly"]
 
 [sub_resource type="Theme" id="Theme_rhts7"]
 default_font_size = 42
@@ -59,6 +60,7 @@ grow_vertical = 2
 theme = SubResource("Theme_rhts7")
 script = ExtResource("1_06t4h")
 shoot_sound = ExtResource("2_at0u2")
+bgm_sound = ExtResource("3_cxdly")
 metadata/_edit_use_anchors_ = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1712937227]

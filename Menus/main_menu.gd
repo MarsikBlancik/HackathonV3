@@ -4,24 +4,35 @@ extends Control
 const GUN_HOLE_TEX = preload("res://Menus/GunHole.png")
 
 @export var hole_scale: float = 0.1
-# ZMIANA: Zmienna na plik dźwiękowy (przypisz swój dźwięk w Inspektorze w Godocie!)
 @export var shoot_sound: AudioStream 
+
+# ZMIANA: Zmienna na plik z muzyką w tle
+@export var bgm_sound: AudioStream 
 
 @onready var btn_play: Button = $VBoxContainer/Play
 @onready var btn_quit: Button = $VBoxContainer/Quit
 
-# ZMIANA: Referencja do odtwarzacza dźwięku
 var audio_player: AudioStreamPlayer
+# ZMIANA: Referencja do odtwarzacza muzyki
+var bgm_player: AudioStreamPlayer 
 
 func _ready() -> void:
-	# Podpinamy tylko główne funkcje. Logikę wystrzału przenosimy do ich wnętrza.
 	btn_play.pressed.connect(_play_pressed)
 	btn_quit.pressed.connect(_quit_pressed)
 	
-	# ZMIANA: Tworzymy i konfigurujemy odtwarzacz dźwięku na starcie
+	# Tworzymy i konfigurujemy odtwarzacz dźwięku strzału
 	audio_player = AudioStreamPlayer.new()
 	audio_player.stream = shoot_sound
 	add_child(audio_player)
+
+	# ZMIANA: Tworzymy i uruchamiamy muzykę w tle
+	if bgm_sound != null:
+		bgm_player = AudioStreamPlayer.new()
+		bgm_player.stream = bgm_sound
+		# Możesz tu zmniejszyć głośność muzyki, jeśli jest za głośna, odkomentowując linię niżej:
+		# bgm_player.volume_db = -10.0 
+		add_child(bgm_player)
+		bgm_player.play() # Odpalamy muzykę od razu po załadowaniu menu
 
 func _spawn_effects():
 	# Funkcja tylko tworzy efekt wizualny
@@ -35,7 +46,7 @@ func _play_pressed():
 	# 1. Wyłączamy przycisk, żeby gracz nie kliknął dwa razy
 	btn_play.disabled = true
 	
-	# ZMIANA: Odtwarzamy dźwięk (jeśli plik został przypisany)
+	# Odtwarzamy dźwięk strzału
 	if audio_player.stream != null:
 		audio_player.play()
 	
