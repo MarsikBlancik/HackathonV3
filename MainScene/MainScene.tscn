@@ -12,8 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
 [ext_resource type="Texture2D" uid="uid://ctjodyvhmp51n" path="res://MainScene/HpBar.png" id="6_j30su"]
 [ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
-[ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="9_66t8v"]
-[ext_resource type="Script" uid="uid://c03pwkosa0p0b" path="res://minimap.gd" id="8_6tdih"]
+[ext_resource type="Script" path="res://minimap.gd" id="8_6tdih"]
+[ext_resource type="Texture2D" uid="uid://cbrjo7ih1h5vl" path="res://MainScene/fillbar.png" id="11_80vrr"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_66t8v"]
 texture = ExtResource("6_4rc7o")
@@ -127,12 +127,13 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BossHealthBar" type="TextureProgressBar" parent="UI" unique_id=1933366110]
-visible = false
-offset_left = 28.0
-offset_top = 33.0
-offset_right = 1121.0
-offset_bottom = 161.0
-texture_progress = ExtResource("9_66t8v")
+offset_left = 513.0
+offset_top = 923.0
+offset_right = 1706.0
+offset_bottom = 1014.0
+scale = Vector2(0.8, 0.2)
+texture_progress = ExtResource("11_80vrr")
+
 [node name="Minimap" type="Control" parent="UI" unique_id=160032795]
 layout_mode = 3
 anchors_preset = 1
