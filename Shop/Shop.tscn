@@ -14,7 +14,7 @@ border_width_bottom = 4
 border_color = Color(0.41368303, 0.4136831, 0.41368303, 1)
 shadow_size = 8
 
-[node name="ShopArea" type="Area2D" unique_id=1935088219]
+[node name="ShopArea" type="Area2D" unique_id=1935088219 groups=["Shop"]]
 process_mode = 3
 script = ExtResource("1_ssic7")
 

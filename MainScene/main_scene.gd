@@ -46,7 +46,7 @@ func setup_timers() -> void:
 	add_child(game_timer)
 	
 	shop_despawn_timer = Timer.new()
-	shop_despawn_timer.wait_time = 60.0
+	shop_despawn_timer.wait_time = 30.0
 	shop_despawn_timer.one_shot = true
 	shop_despawn_timer.timeout.connect(_on_despawn_timer_timeout)
 	add_child(shop_despawn_timer)
