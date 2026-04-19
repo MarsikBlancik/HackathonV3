@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cbko0hhof8aom" path="res://LevelUpMenu.tscn" id="6_431t1"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
 [ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
+[ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="9_66t8v"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_a814b"]
 
@@ -95,6 +96,14 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="BossHealthBar" type="TextureProgressBar" parent="UI" unique_id=1933366110]
+visible = false
+offset_left = 28.0
+offset_top = 33.0
+offset_right = 1121.0
+offset_bottom = 161.0
+texture_progress = ExtResource("9_66t8v")
 
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
 
