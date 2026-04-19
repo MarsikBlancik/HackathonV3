@@ -519,6 +519,7 @@ func gain_coins(amount: int) -> void:
 
 # Słownik pamiętający, ile razy gracz kupił dane ulepszenie
 var purchased_upgrades: Dictionary = {}
+var shop_reroll_count: int = 0
 
 func spend_coins(amount: int) -> bool:
 	if coins >= amount:

@@ -24,6 +24,8 @@ const BLOOD_SCENE = preload("res://EyeCandy/BloodParticles.tscn")
 var player: Node2D = null
 var time_since_last_attack: float = 0.0
 var is_attacking: bool = false # <--- NOWE: Blokada animacji
+const MAGNET_SCENE = preload("res://Magnet.tscn") 
+var magnet_drop_chance: float = 0.015 # 1.5% szansy
 
 # --- WĘZŁY ---
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D # <--- NOWE: Referencja do Sprite'a
@@ -150,6 +152,17 @@ func spawn_damage_number(damage_value: int) -> void:
 	tween.chain().tween_callback(label.queue_free)
 
 func die() -> void: 
+	
+	# --- RZUT NA MAGNES ---
+	if randf() < magnet_drop_chance and MAGNET_SCENE:
+		var magnet = MAGNET_SCENE.instantiate()
+		magnet.global_position = global_position
+		
+		# Mały rozrzut, żeby magnes nie upadł idealnie w punkcie XP/monety
+		var random_offset = Vector2(randf_range(-15, 15), randf_range(-15, 15))
+		magnet.global_position += random_offset
+		
+		get_parent().call_deferred("add_child", magnet)
 	# Wyrzucanie XP
 	if xp_gem_scene != null:
 		var gem = xp_gem_scene.instantiate()

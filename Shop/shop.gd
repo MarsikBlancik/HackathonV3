@@ -7,7 +7,8 @@ extends Area2D
 @onready var button3 = $ShopUI/Panel/HBoxContainer/Button3
 @onready var exit_button = $ShopUI/Panel/HBoxContainer/Button4 # <--- Przycisk wyjścia
 @onready var reroll_button = $ShopUI/Panel/HBoxContainer/Button5 # <--- Referencja do przycisku
-var reroll_count: int = 0
+
+
 var base_reroll_price: int = 2 # Startowa cena po darmowych próbach
 
 var player_node: Node2D = null
@@ -29,9 +30,9 @@ var upgrade_pool = {
 var current_offers = [] # Tu będziemy trzymać aktualnie wylosowane przedmioty
 
 func _ready() -> void:
+	exit_button.text = "Wyjdź \n (za darmo)"
 	prompt.hide()
 	shop_ui.hide()
-	exit_button.text = "Wyjdź\n(Za darmo)"
 	
 	# Podłączenie sygnałów
 	button1.pressed.connect(_on_button1_pressed)
@@ -39,7 +40,6 @@ func _ready() -> void:
 	button3.pressed.connect(_on_button3_pressed)
 	exit_button.pressed.connect(_on_button4_pressed)
 	reroll_button.pressed.connect(_on_reroll_pressed)
-	update_reroll_button_text()
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player"):
@@ -71,6 +71,7 @@ func toggle_shop() -> void:
 		open_shop()
 
 func open_shop() -> void:
+	update_reroll_button_text()
 	roll_shop_items() # Losujemy przedmioty przed pokazaniem UI!
 	shop_ui.show()
 	prompt.hide()
@@ -190,15 +191,24 @@ func _on_button4_pressed() -> void:
 
 # Funkcja obliczająca aktualny koszt odświeżenia
 func get_reroll_price() -> int:
-	if reroll_count < 2:
+	# Odczytujemy licznik bezpośrednio z gracza
+	var global_rerolls = 0
+	if player_node:
+		global_rerolls = player_node.shop_reroll_count
+		
+	if global_rerolls < 2:
 		return 0
-	# Formuła: cena rośnie o 2 monety przy każdym kolejnym odświeżeniu
-	return base_reroll_price + (reroll_count - 2) * 2
+	return base_reroll_price + (global_rerolls - 2) * 2
 
 func update_reroll_button_text() -> void:
 	var price = get_reroll_price()
+	var global_rerolls = 0
+	if player_node:
+		global_rerolls = player_node.shop_reroll_count
+
 	if price == 0:
-		reroll_button.text = "Odśwież\n(Darmowe: %d/2)" % [reroll_count + 1]
+		# Pokazujemy postęp darmowych rzutów (np. 1/2, 2/2)
+		reroll_button.text = "Odśwież\n(Darmowe: %d/2)" % [global_rerolls + 1]
 	else:
 		reroll_button.text = "Odśwież\n(%d monet)" % [price]
 
@@ -216,7 +226,9 @@ func _on_reroll_pressed() -> void:
 		execute_reroll()
 
 func execute_reroll() -> void:
-	reroll_count += 1
-	roll_shop_items() # Losujemy nowe przedmioty
-	update_reroll_button_text() # Aktualizujemy tekst na przycisku
-	print("Sklep odświeżony! Liczba rerolli: ", reroll_count)
+	# Zwiększamy licznik u gracza, a nie w sklepie!
+	if player_node:
+		player_node.shop_reroll_count += 1
+		
+	roll_shop_items()
+	update_reroll_button_text()

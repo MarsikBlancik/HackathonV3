@@ -8,6 +8,8 @@ var player: Node2D = null
 var is_magnetized: bool = false
 
 func _ready() -> void:
+	add_to_group("Drop") # <--- NOWOŚĆ: Grupa dla Globalnego Magnesu
+	
 	# Podpięcie sygnałów kolizji
 	body_entered.connect(_on_collected)
 	area_entered.connect(_on_collected)
@@ -21,11 +23,11 @@ func _process(delta: float) -> void:
 			player = get_tree().current_scene.find_child("Player", true, false)
 		return
 		
-	var dist = global_position.distance_to(player.global_position)
-	
-	# Włączenie magnesu
-	if dist < magnet_distance:
-		is_magnetized = true
+	# Włączenie lokalnego magnesu
+	if not is_magnetized:
+		var dist = global_position.distance_to(player.global_position)
+		if dist < magnet_distance:
+			is_magnetized = true
 		
 	# Ruch w stronę gracza
 	if is_magnetized:
@@ -33,8 +35,14 @@ func _process(delta: float) -> void:
 		global_position += direction * collect_speed * delta
 		collect_speed += 10.0 # Przyspiesza z czasem, by zawsze dogonić
 
+# --- NOWA FUNKCJA DLA GLOBALNEGO MAGNESU ---
+func magnetize_to(target_player: Node2D) -> void:
+	player = target_player
+	is_magnetized = true
+	collect_speed = max(collect_speed, 800.0) # Nadaje wielką prędkość od razu!
+
 func _on_collected(body_or_area: Node) -> void:
-	# Sprawdzamy co w nas uderzyło (czy to sam Gracz, czy jego strefa ataku/kolizji)
+	# Sprawdzamy co w nas uderzyło
 	var target = body_or_area
 	if not target.is_in_group("Player") and target.name != "Player":
 		target = body_or_area.get_parent()
