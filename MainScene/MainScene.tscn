@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cl25grr7o014x" path="res://placeholderobiekt.tscn" id="1_x4av3"]
 [ext_resource type="PackedScene" uid="uid://1e6mg1xkvepy" path="res://Shop/Shop.tscn" id="2_gmwbw"]
 [ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player/Player.tscn" id="2_rpqi1"]
+[ext_resource type="PackedScene" uid="uid://dnu7cfcus62sc" path="res://Enemies/Boss/boss.tscn" id="3_6tdih"]
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="Texture2D" uid="uid://db52cg0vq5t2u" path="res://MainScene/energyfillbar.png" id="6_4rc7o"]
 [ext_resource type="PackedScene" uid="uid://dsiigcnxays1n" path="res://Menus/pause_menu.tscn" id="6_5crlr"]
@@ -11,7 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
 [ext_resource type="Texture2D" uid="uid://ctjodyvhmp51n" path="res://MainScene/HpBar.png" id="6_j30su"]
 [ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
-[ext_resource type="Script" uid="uid://c03pwkosa0p0b" path="res://minimap.gd" id="8_6tdih"]
+[ext_resource type="Script" path="res://minimap.gd" id="8_6tdih"]
+[ext_resource type="Texture2D" uid="uid://cbrjo7ih1h5vl" path="res://MainScene/fillbar.png" id="11_80vrr"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_66t8v"]
 texture = ExtResource("6_4rc7o")
@@ -26,6 +28,7 @@ modulate_color = Color(0.12156863, 1, 0.105882354, 1)
 z_index = 1002
 script = ExtResource("1_mmud7")
 shop_scene = ExtResource("2_gmwbw")
+boss_scene = ExtResource("3_6tdih")
 
 [node name="Node2D" parent="." unique_id=1689513127 instance=ExtResource("1_x4av3")]
 
@@ -122,6 +125,14 @@ grow_vertical = 0
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="BossHealthBar" type="TextureProgressBar" parent="UI" unique_id=1933366110]
+offset_left = 513.0
+offset_top = 923.0
+offset_right = 1706.0
+offset_bottom = 1014.0
+scale = Vector2(0.8, 0.2)
+texture_progress = ExtResource("11_80vrr")
 
 [node name="Minimap" type="Control" parent="UI" unique_id=160032795]
 layout_mode = 3

@@ -68,6 +68,7 @@ const SLASH_TEXTURE = preload("res://Player/Trail.png")
 var ghost_timer: Timer
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D 
+@onready var shadow_sprite: AnimatedSprite2D = $AnimatedSprite2D2 # <--- NOWE: Referencja do cienia
 @onready var camera: Camera2D = $Camera2D
 @onready var gadget_manager: Node = $GadgetManager 
 
@@ -166,6 +167,12 @@ func _process(delta: float) -> void:
 			animated_sprite.play("Walk")
 		else:
 			animated_sprite.play("default")
+			
+	# --- NOWE: SYNCHRONIZACJA CIENIA ---
+	if shadow_sprite and animated_sprite:
+		shadow_sprite.animation = animated_sprite.animation
+		shadow_sprite.frame = animated_sprite.frame
+		shadow_sprite.flip_h = animated_sprite.flip_h
 			
 	# Zastosowanie prędkości do pozycji
 	knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, knockback_friction * delta)
