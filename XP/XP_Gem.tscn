@@ -6,7 +6,7 @@
 [sub_resource type="CircleShape2D" id="CircleShape2D_0fsme"]
 radius = 7.58
 
-[node name="XpGem" type="Area2D" unique_id=603420744]
+[node name="XpGem" type="Area2D" unique_id=603420744 groups=["XP"]]
 z_index = 1001
 script = ExtResource("1_oacb4")
 

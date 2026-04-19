@@ -1,9 +1,46 @@
 [gd_scene format=3 uid="uid://dsiigcnxays1n"]
 
 [ext_resource type="Script" uid="uid://bev5gfh88jio" path="res://Menus/pause_menu.gd" id="1_hdmo1"]
+[ext_resource type="Texture2D" uid="uid://q1etn5xvgg3h" path="res://Menus/ButtonMenu.png" id="2_ik086"]
 
 [sub_resource type="Theme" id="Theme_hdmo1"]
 default_font_size = 42
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2og8s"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_v7yoa"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rxubw"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wq2xl"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iptcy"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8dklf"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tqvx8"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_rd0nd"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_m31fd"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lp3yp"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_441vy"]
+texture = ExtResource("2_ik086")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_nhjqi"]
+texture = ExtResource("2_ik086")
 
 [node name="PauseMenu" type="Control" unique_id=54559525]
 layout_mode = 3
@@ -27,23 +64,28 @@ grow_vertical = 2
 alignment = 1
 
 [node name="Continue" type="Button" parent="VBoxContainer" unique_id=756512604]
-custom_minimum_size = Vector2(350, 125)
+custom_minimum_size = Vector2(525, 270)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
 size_flags_stretch_ratio = 3.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_2og8s")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_v7yoa")
+theme_override_styles/hover = SubResource("StyleBoxTexture_rxubw")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_wq2xl")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_iptcy")
+theme_override_styles/focus = SubResource("StyleBoxTexture_8dklf")
 text = "Kontynuuj"
 
-[node name="Settings" type="Button" parent="VBoxContainer" unique_id=267019607]
-custom_minimum_size = Vector2(350, 125)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 10
-text = "Ustawienia"
-
 [node name="MainMenu" type="Button" parent="VBoxContainer" unique_id=1026666864]
-custom_minimum_size = Vector2(350, 125)
+custom_minimum_size = Vector2(525, 270)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
+theme_override_styles/normal = SubResource("StyleBoxTexture_tqvx8")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_rd0nd")
+theme_override_styles/hover = SubResource("StyleBoxTexture_m31fd")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_lp3yp")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_441vy")
+theme_override_styles/focus = SubResource("StyleBoxTexture_nhjqi")
 text = "Menu Główne"

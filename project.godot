@@ -26,6 +26,9 @@ project/assembly_name="bullethell"
 [global_group]
 
 Player=""
+Enemy=""
+XP=""
+Shop=""
 
 [input]
 

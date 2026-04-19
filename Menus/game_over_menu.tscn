@@ -1,9 +1,46 @@
 [gd_scene format=3 uid="uid://c0ut822g4rvd8"]
 
 [ext_resource type="Script" uid="uid://blvoq1x425oqq" path="res://restart.gd" id="1_w6t3f"]
+[ext_resource type="Texture2D" uid="uid://q1etn5xvgg3h" path="res://Menus/ButtonMenu.png" id="2_cpnad"]
 
 [sub_resource type="Theme" id="Theme_w6t3f"]
 default_font_size = 42
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_isvg7"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_io7n2"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3olhq"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5n62t"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7y5yy"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lgrpb"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cpnad"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0krwp"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b3446"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1q160"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_t5aw8"]
+texture = ExtResource("2_cpnad")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2atd3"]
+texture = ExtResource("2_cpnad")
 
 [node name="game_over_menu" type="Control" unique_id=189769753]
 layout_mode = 3
@@ -29,18 +66,30 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="Restart" type="Button" parent="VBoxContainer" unique_id=765637837]
-custom_minimum_size = Vector2(350, 125)
+custom_minimum_size = Vector2(525, 270)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
 size_flags_stretch_ratio = 3.0
 theme = SubResource("Theme_w6t3f")
+theme_override_styles/normal = SubResource("StyleBoxTexture_isvg7")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_io7n2")
+theme_override_styles/hover = SubResource("StyleBoxTexture_3olhq")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_5n62t")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_7y5yy")
+theme_override_styles/focus = SubResource("StyleBoxTexture_lgrpb")
 text = "Restart"
 
 [node name="MainMenu" type="Button" parent="VBoxContainer" unique_id=1620779456]
-custom_minimum_size = Vector2(350, 125)
+custom_minimum_size = Vector2(525, 270)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
 theme = SubResource("Theme_w6t3f")
+theme_override_styles/normal = SubResource("StyleBoxTexture_cpnad")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_0krwp")
+theme_override_styles/hover = SubResource("StyleBoxTexture_b3446")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_1q160")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_t5aw8")
+theme_override_styles/focus = SubResource("StyleBoxTexture_2atd3")
 text = "Menu Główne"

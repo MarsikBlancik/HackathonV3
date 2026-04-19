@@ -71,9 +71,6 @@ var ghost_timer: Timer
 @onready var camera: Camera2D = $Camera2D
 @onready var gadget_manager: Node = $GadgetManager 
 
-# --- NOWOŚĆ: Referencja do strzałki sklepu ---
-@onready var shop_arrow: Sprite2D = $ShopArrow 
-
 var shake_strength: float = 0.0
 @export var shake_decay: float = 10.0 
 
@@ -182,29 +179,6 @@ func _process(delta: float) -> void:
 		if shake_strength < 0.1:
 			shake_strength = 0.0
 			camera.offset = Vector2.ZERO
-
-
-	# --- NOWOŚĆ: 6. Obsługa strzałki wskazującej sklep ---
-	if is_instance_valid(shop_arrow):
-		var shops = get_tree().get_nodes_in_group("Shop")
-		var nearest_shop: Node2D = null
-		var min_dist: float = INF # Ustawiamy początkowy dystans na nieskończoność
-		
-		for shop in shops:
-			# Upewniamy się, że obiekt fizycznie istnieje i jest węzłem 2D, zanim w ogóle go dotkniemy
-			if is_instance_valid(shop) and shop is Node2D:
-				var dist = global_position.distance_to(shop.global_position)
-				if dist < min_dist:
-					min_dist = dist
-					nearest_shop = shop
-					
-		# Jeśli po przefiltrowaniu znaleźliśmy działający sklep
-		if nearest_shop != null:
-			shop_arrow.show()
-			shop_arrow.look_at(nearest_shop.global_position)
-		else:
-			# Nie ma żadnych sklepów (lub zostały zniszczone)
-			shop_arrow.hide()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:

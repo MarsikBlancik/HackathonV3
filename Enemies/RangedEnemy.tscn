@@ -83,7 +83,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="RangedEnemy" type="Node2D" unique_id=513809056]
+[node name="RangedEnemy" type="Node2D" unique_id=513809056 groups=["Enemy"]]
 script = ExtResource("1_o20mk")
 xp_gem_scene = ExtResource("2_8ir81")
 coin_scene = ExtResource("3_ytok2")

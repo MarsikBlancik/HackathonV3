@@ -5,10 +5,20 @@
 [ext_resource type="PackedScene" uid="uid://1e6mg1xkvepy" path="res://Shop/Shop.tscn" id="2_gmwbw"]
 [ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player/Player.tscn" id="2_rpqi1"]
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
+[ext_resource type="Texture2D" uid="uid://db52cg0vq5t2u" path="res://MainScene/energyfillbar.png" id="6_4rc7o"]
 [ext_resource type="PackedScene" uid="uid://dsiigcnxays1n" path="res://Menus/pause_menu.tscn" id="6_5crlr"]
 [ext_resource type="PackedScene" uid="uid://cbko0hhof8aom" path="res://LevelUpMenu.tscn" id="6_431t1"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
+[ext_resource type="Texture2D" uid="uid://ctjodyvhmp51n" path="res://MainScene/HpBar.png" id="6_j30su"]
 [ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
+[ext_resource type="Script" uid="uid://c03pwkosa0p0b" path="res://minimap.gd" id="8_6tdih"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_66t8v"]
+texture = ExtResource("6_4rc7o")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_80vrr"]
+texture = ExtResource("6_4rc7o")
+modulate_color = Color(0.12156863, 1, 0.105882354, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_a814b"]
 
@@ -25,23 +35,37 @@ shop_scene = ExtResource("2_gmwbw")
 script = ExtResource("5_rf2cd")
 
 [node name="HPBar" type="ProgressBar" parent="UI" unique_id=1024670690]
-offset_left = 35.0
-offset_top = 89.0
-offset_right = 119.0
-offset_bottom = 179.0
-max_value = 3.0
-step = 1.0
-value = 3.0
-
-[node name="EnergyBar" type="ProgressBar" parent="UI" unique_id=2052450923]
-offset_left = 158.0
-offset_top = 20.0
-offset_right = 253.0
-offset_bottom = 91.0
+offset_left = 42.0
+offset_top = 50.0
+offset_right = 412.0
+offset_bottom = 102.0
+theme_override_styles/fill = SubResource("StyleBoxTexture_66t8v")
 max_value = 3.0
 step = 1.0
 value = 3.0
 show_percentage = false
+
+[node name="Sprite2D" type="Sprite2D" parent="UI/HPBar" unique_id=1178513617]
+position = Vector2(185, 23.000008)
+scale = Vector2(0.3123524, 0.31235242)
+texture = ExtResource("6_j30su")
+
+[node name="EnergyBar" type="ProgressBar" parent="UI" unique_id=2052450923]
+offset_left = 40.0
+offset_top = 118.0
+offset_right = 380.0
+offset_bottom = 170.0
+theme_override_styles/fill = SubResource("StyleBoxTexture_80vrr")
+max_value = 3.0
+step = 1.0
+value = 3.0
+show_percentage = false
+
+[node name="Sprite2D" type="Sprite2D" parent="UI/EnergyBar" unique_id=1324274358]
+position = Vector2(169.50002, 27)
+scale = Vector2(0.2837398, 0.28679243)
+skew = 0.17453292
+texture = ExtResource("6_j30su")
 
 [node name="XPBar" type="ProgressBar" parent="UI" unique_id=232814027]
 offset_left = 56.0
@@ -68,12 +92,17 @@ anchor_bottom = 0.5
 metadata/_edit_use_anchors_ = true
 
 [node name="CoinLabel" type="Label" parent="UI" unique_id=1352267754]
-anchors_preset = 1
+anchors_preset = 6
 anchor_left = 1.0
+anchor_top = 0.5
 anchor_right = 1.0
+anchor_bottom = 0.5
 offset_left = -182.0
-offset_bottom = 62.0
+offset_top = -31.0
+offset_bottom = 31.0
 grow_horizontal = 0
+grow_vertical = 2
+size_flags_vertical = 8
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -94,12 +123,22 @@ theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Minimap" type="Control" parent="UI" unique_id=160032795]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -202.0
+offset_bottom = 202.0
+grow_horizontal = 0
+script = ExtResource("8_6tdih")
+
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=914282549]
-offset_left = -69593.0
-offset_top = -61385.0
-offset_right = 61798.0
-offset_bottom = 42662.313
+offset_left = -69628.0
+offset_top = -61350.0
+offset_right = 61763.0
+offset_bottom = 42697.313
 texture = ExtResource("7_431t1")
 stretch_mode = 1

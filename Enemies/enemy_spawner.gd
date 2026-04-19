@@ -6,7 +6,7 @@ extends Node2D
 
 # --- USTAWIENIA TRUDNOŚCI ---
 @export var initial_spawn_time: float = 1.0 # Początkowy średni czas
-@export var min_spawn_time: float = 1     # Limit szybkości
+@export var min_spawn_time: float = 1       # Limit szybkości
 @export var time_to_reach_limit: float = 300.0 # Ile sekund do limitu (300s = 5 minut)
 @export var variance: float = 0.5           # Losowe odchylenie (+/- 0.5s)
 
@@ -27,10 +27,15 @@ func _process(delta: float) -> void:
 	current_base_time = max(min_spawn_time, current_base_time)
 
 func _on_timer_timeout() -> void:
-	if is_instance_valid(player):
+	# ZMIANA: Sprawdzamy, czy na mapie jest aktywny sklep
+	var shops_active = get_tree().get_nodes_in_group("Shop").size() > 0
+	
+	# Jeśli NIE MA sklepu i gracz istnieje, spawniemy wroga
+	if not shops_active and is_instance_valid(player):
 		spawn_enemy()
 		
-	# Odpalamy Timer na nowo
+	# Odpalamy Timer na nowo (niezależnie od tego czy zespawnowaliśmy wroga, 
+	# żeby po zniknięciu sklepu proces od razu ruszył)
 	set_next_timer()
 
 func set_next_timer() -> void:

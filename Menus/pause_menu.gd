@@ -6,11 +6,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	var btnContinue = $VBoxContainer/Continue
-	var btnSettins = $VBoxContainer/Settings
 	var btnMainMenu = $VBoxContainer/MainMenu
 	
 	btnContinue.pressed.connect(_continue_pressed)
-	btnSettins.pressed.connect(_settings_pressed)
 	btnMainMenu.pressed.connect(_main_menu_pressed)
 
 func _input(_event):
