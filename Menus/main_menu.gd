@@ -57,6 +57,9 @@ func _quit_pressed():
 	# Wyłączamy przycisk, żeby zapobiec spamowaniu
 	btn_quit.disabled = true
 	
+	if audio_player.stream != null:
+		audio_player.play()
+	
 	_spawn_effects()
 	
 	# Podobnie jak przy Play, dajemy grze chwilę na wyświetlenie dziury

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dt7248qh7uxqk" path="res://Menus/main_menu.gd" id="1_06t4h"]
 [ext_resource type="AudioStream" uid="uid://dr8hsoca0afs1" path="res://Menus/415912__okieactor__heathers-gunshot-effect2.wav" id="2_at0u2"]
 [ext_resource type="Texture2D" uid="uid://q1etn5xvgg3h" path="res://Menus/ButtonMenu.png" id="2_p3jrs"]
+[ext_resource type="Texture2D" uid="uid://ddflmpd2qq20n" path="res://Menus/Gemini_Generated_Image_hfnm65hfnm65hfnm.png" id="3_11gta"]
 
 [sub_resource type="Theme" id="Theme_rhts7"]
 default_font_size = 42
@@ -68,6 +69,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 metadata/_edit_use_anchors_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="VBoxContainer" unique_id=634560533]
+position = Vector2(-23.000023, -13.000008)
+scale = Vector2(1.5734463, 1.5734463)
+texture = ExtResource("3_11gta")
+centered = false
 
 [node name="Play" type="Button" parent="VBoxContainer" unique_id=98352751]
 custom_minimum_size = Vector2(525, 270)
