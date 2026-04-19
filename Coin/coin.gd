@@ -24,18 +24,27 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if is_instance_valid(player):
-		# 1. Sprawdzanie czy gracz wszedł w lokalną strefę
+		var dist = global_position.distance_to(player.global_position)
+		
+		# 1. Sprawdzanie czy gracz wszedł w strefę magnesu
 		if not is_following:
-			if global_position.distance_to(player.global_position) <= magnet_range:
+			if dist <= magnet_range:
 				is_following = true
 				if float_tween:
 					float_tween.kill() # Zatrzymujemy podskakiwanie
 		
 		# 2. Lot w stronę gracza
 		if is_following:
-			var direction = (player.global_position - global_position).normalized()
-			follow_speed += 600.0 * delta 
-			global_position += direction * follow_speed * delta
+			follow_speed += 800.0 * delta 
+			global_position = global_position.move_toward(player.global_position, follow_speed * delta)
+			
+			# Zabezpieczenie #1: Dystans (wymusza zebranie z bliska)
+			if global_position.distance_to(player.global_position) < 40.0:
+				_on_collected(player)
+				
+			# Zabezpieczenie #2: Odkurzacz (zbiera wszystko, co go dotyka w klatce lotu)
+			for node in get_overlapping_bodies() + get_overlapping_areas():
+				_on_collected(node)
 
 # --- NOWA FUNKCJA DLA GLOBALNEGO MAGNESU ---
 func magnetize_to(target_player: Node2D) -> void:
@@ -45,15 +54,14 @@ func magnetize_to(target_player: Node2D) -> void:
 	if float_tween:
 		float_tween.kill() # Upewniamy się, że przerywa animację zawieszenia
 
-func _on_collected(node: Node2D) -> void:
-	var player_node = null
+func _on_collected(node: Node) -> void:
+	var target = node
 	
-	if node.is_in_group("Player"):
-		player_node = node
-	elif node.get_parent() != null and node.get_parent().is_in_group("Player"):
-		player_node = node.get_parent()
+	# PANCERNY DETEKTYW: Jeśli trafiliśmy w ramię/hitbox gracza, idziemy wzwyż do głównego skryptu
+	if not target.has_method("gain_coins") and target.get_parent() != null:
+		target = target.get_parent()
 		
-	if player_node != null:
-		if player_node.has_method("gain_coins"):
-			player_node.gain_coins(coin_value)
-			queue_free()
+	# Jeśli po sprawdzeniu mamy cel z portfelem - zbieramy!
+	if target.has_method("gain_coins"):
+		target.gain_coins(coin_value)
+		queue_free()

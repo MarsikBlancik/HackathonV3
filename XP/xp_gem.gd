@@ -15,25 +15,30 @@ func _ready() -> void:
 	area_entered.connect(_on_collected)
 
 func _process(delta: float) -> void:
-	# Szukamy gracza, jeśli go nie mamy
 	if not is_instance_valid(player):
 		player = get_tree().get_first_node_in_group("Player")
-		# Awaryjne szukanie po nazwie, gdyby grupa nie zadziałała
 		if not player:
 			player = get_tree().current_scene.find_child("Player", true, false)
 		return
 		
+	var dist = global_position.distance_to(player.global_position)
+	
 	# Włączenie lokalnego magnesu
-	if not is_magnetized:
-		var dist = global_position.distance_to(player.global_position)
-		if dist < magnet_distance:
-			is_magnetized = true
+	if not is_magnetized and dist < magnet_distance:
+		is_magnetized = true
 		
 	# Ruch w stronę gracza
 	if is_magnetized:
-		var direction = (player.global_position - global_position).normalized()
-		global_position += direction * collect_speed * delta
-		collect_speed += 10.0 # Przyspiesza z czasem, by zawsze dogonić
+		collect_speed += 800.0 * delta 
+		global_position = global_position.move_toward(player.global_position, collect_speed * delta)
+		
+		# Zabezpieczenie #1: Dystans
+		if global_position.distance_to(player.global_position) < 40.0:
+			_on_collected(player)
+			
+		# Zabezpieczenie #2: Odkurzacz kolizji
+		for node in get_overlapping_bodies() + get_overlapping_areas():
+			_on_collected(node)
 
 # --- NOWA FUNKCJA DLA GLOBALNEGO MAGNESU ---
 func magnetize_to(target_player: Node2D) -> void:
@@ -41,13 +46,13 @@ func magnetize_to(target_player: Node2D) -> void:
 	is_magnetized = true
 	collect_speed = max(collect_speed, 800.0) # Nadaje wielką prędkość od razu!
 
-func _on_collected(body_or_area: Node) -> void:
-	# Sprawdzamy co w nas uderzyło
-	var target = body_or_area
-	if not target.is_in_group("Player") and target.name != "Player":
-		target = body_or_area.get_parent()
+func _on_collected(node: Node) -> void:
+	var target = node
+	
+	# Szukamy funkcji na rodzicu, jeśli ten konkretny obiekt jej nie ma
+	if not target.has_method("gain_xp") and target.get_parent() != null:
+		target = target.get_parent()
 		
-	# Jeśli to gracz i potrafi przyjmować XP
-	if target and target.has_method("gain_xp"):
+	if target.has_method("gain_xp"):
 		target.gain_xp(xp_value)
 		queue_free()
