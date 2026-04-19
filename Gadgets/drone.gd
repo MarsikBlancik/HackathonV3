@@ -45,13 +45,13 @@ func setup(new_tier: int, start_angle: float):
 			damage = 1
 			shoot_timer.wait_time = 1.0
 		2:
-			detection_range = 800.0
+			detection_range = 600.0
 			damage = 2
-			shoot_timer.wait_time = 0.6
+			shoot_timer.wait_time = 0.8
 		3:
-			detection_range = 1200.0
+			detection_range = 800.0
 			damage = 3
-			shoot_timer.wait_time = 0.3
+			shoot_timer.wait_time = 0.5
 			
 	shoot_timer.start()
 
