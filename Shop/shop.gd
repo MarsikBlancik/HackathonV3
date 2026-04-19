@@ -9,6 +9,9 @@ extends Area2D
 var player_in_range: bool = false
 
 func _ready() -> void:
+	# --- NOWOŚĆ: Sklep przypisuje się do grupy z poziomu kodu ---
+	add_to_group("Shop")
+	
 	prompt.hide()
 	shop_ui.hide()
 	

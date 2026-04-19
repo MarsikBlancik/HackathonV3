@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bgaf35s2lqp47" path="res://Player/player.gd" id="1_xhfnw"]
 [ext_resource type="Texture2D" uid="uid://uewwbswx7xiu" path="res://Player/spriteframe.png" id="2_q3lat"]
 [ext_resource type="Script" uid="uid://hkfv6afvt4pg" path="res://Player/gadget_manager.gd" id="3_gadget"]
+[ext_resource type="Texture2D" uid="uid://bwuuatbjbyw2" path="res://Player/pngwing.com.png" id="4_ddoul"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kpjcp"]
 radius = 9.333334
@@ -112,3 +113,8 @@ script = ExtResource("3_gadget")
 scale = Vector2(0.3, 0.3)
 sprite_frames = SubResource("SpriteFrames_6ysni")
 animation = &"Dash"
+
+[node name="ShopArrow" type="Sprite2D" parent="." unique_id=1975574222]
+position = Vector2(0, 100)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("4_ddoul")
