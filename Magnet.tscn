@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://djmj8pmfo7pny"]
+
+[ext_resource type="Script" uid="uid://d3e8ese56mr53" path="res://magnet.gd" id="1_ock5g"]
+[ext_resource type="Texture2D" uid="uid://bg6fn6js05eym" path="res://icon.svg" id="2_qs5to"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ojo8g"]
+
+[node name="Magnet" type="Area2D" unique_id=1805713790]
+collision_mask = 15
+script = ExtResource("1_ock5g")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=599325053]
+texture = ExtResource("2_qs5to")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=4393927]
+shape = SubResource("CircleShape2D_ojo8g")
