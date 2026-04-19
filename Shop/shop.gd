@@ -12,6 +12,14 @@ extends Area2D
 @onready var exit_button = $ShopUI/Panel/VBoxContainer/ActionsRow/Button4 
 @onready var reroll_button = $ShopUI/Panel/VBoxContainer/ActionsRow/Button5
 
+# --- ŚCIEŻKI DO KONTENERÓW ---
+@onready var upgrades_row = $ShopUI/Panel/VBoxContainer/UpgradesRow
+@onready var actions_row = $ShopUI/Panel/VBoxContainer/ActionsRow
+
+# --- ZAŁADOWANIE ZASOBÓW DO WYGLĄDU ---
+const SCHLOP_FONT = preload("res://shlop rg.otf")
+const TABLICZKA_TEX = preload("res://Tabliczka.png")
+
 var player_node: Node2D = null
 var player_in_range: bool = false
 var base_reroll_price: int = 2 
@@ -35,11 +43,58 @@ func _ready() -> void:
 	shop_ui.hide()
 	exit_button.text = "Wyjdź\n(Za darmo)"
 	
+	# Aplikujemy wygląd dla przycisków
+	setup_button_styles()
+	
 	button1.pressed.connect(_on_button1_pressed)
 	button2.pressed.connect(_on_button2_pressed)
 	button3.pressed.connect(_on_button3_pressed)
 	exit_button.pressed.connect(_on_button4_pressed)
 	reroll_button.pressed.connect(_on_reroll_pressed)
+
+# --- POPRAWIONA FUNKCJA DO STYLIZOWANIA PRZYCISKÓW ---
+func setup_button_styles() -> void:
+	# 1. Marginesy zewnętrzne (odstęp MIĘDZY przyciskami w rzędzie poziomo)
+	upgrades_row.add_theme_constant_override("separation", 40)
+	actions_row.add_theme_constant_override("separation", 40)
+	
+	# 2. Przygotowanie stylu tła kafelka
+	var tabliczka_style = StyleBoxTexture.new()
+	tabliczka_style.texture = TABLICZKA_TEX
+	tabliczka_style.texture_margin_top = 20
+	tabliczka_style.texture_margin_bottom = 20
+	tabliczka_style.texture_margin_left = 15
+	tabliczka_style.texture_margin_right = 15
+	
+	# Podział przycisków na odpowiednie grupy
+	var upgrade_buttons = [button1, button2, button3]
+	var action_buttons = [exit_button, reroll_button] # Przyciski dolne (bez tabliczek)
+	var all_buttons = [button1, button2, button3, exit_button, reroll_button]
+	
+	# 3. Nakładamy TABLICZKĘ i wymiary TYLKO na 3 główne przyciski ulepszeń
+	for btn in upgrade_buttons:
+		btn.custom_minimum_size = Vector2(400, 600) 
+		btn.add_theme_stylebox_override("normal", tabliczka_style)
+		btn.add_theme_stylebox_override("hover", tabliczka_style)
+		btn.add_theme_stylebox_override("pressed", tabliczka_style)
+		btn.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		
+	# 4. NOWE: Tworzymy styl dla przycisków bez tabliczek, żeby miały odstęp (margines górny)
+	var action_style = StyleBoxEmpty.new()
+	action_style.content_margin_top = 150 # Zmień tę wartość na 100 lub 200 wg. upodobania
+	
+	# Nakładamy pusty styl z marginesem na przyciski Wyjdź i Odśwież
+	for btn in action_buttons:
+		btn.add_theme_stylebox_override("normal", action_style)
+		btn.add_theme_stylebox_override("hover", action_style)
+		btn.add_theme_stylebox_override("pressed", action_style)
+		
+	# 5. Nakładamy samą CZCIONKĘ i usuwamy systemową ramkę (focus) ze WSZYSTKICH przycisków
+	for btn in all_buttons:
+		btn.add_theme_font_override("font", SCHLOP_FONT)
+		btn.add_theme_font_size_override("font_size", 36.7)
+		btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("Player"):
@@ -73,7 +128,7 @@ func toggle_shop() -> void:
 func open_shop() -> void:
 	roll_shop_items()
 	update_reroll_button_text()
-	update_coin_display() # <--- Aktualizujemy monety przy otwarciu!
+	update_coin_display() 
 	shop_ui.show()
 	prompt.hide()
 	get_tree().paused = true
@@ -88,7 +143,6 @@ func destroy_shop() -> void:
 	get_tree().paused = false 
 	queue_free()
 
-# --- NOWOŚĆ: FUNKCJA AKTUALIZUJĄCA TEKST MONET ---
 func update_coin_display() -> void:
 	if player_node and coin_label:
 		coin_label.text = "Twoje Monety: " + str(player_node.coins)
@@ -182,7 +236,7 @@ func execute_reroll() -> void:
 		
 	roll_shop_items()
 	update_reroll_button_text()
-	update_coin_display() # <--- Aktualizujemy monety po zapłaceniu za reroll!
+	update_coin_display()
 
 # --- LOGIKA ZAKUPÓW ---
 func try_buy(index: int) -> void:
@@ -191,7 +245,6 @@ func try_buy(index: int) -> void:
 	
 	if player_node and player_node.spend_coins(offer.price):
 		apply_upgrade(offer)
-		# Zaktualizuj licznik monet, jeśli sklep nie znika od razu (opcjonalnie)
 		update_coin_display() 
 		destroy_shop()
 	else:

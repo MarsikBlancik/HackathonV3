@@ -123,7 +123,7 @@ func _on_game_timer_timeout() -> void:
 		var seconds = elapsed_seconds % 60
 		time_label.text = "%02d:%02d" % [minutes, seconds]
 	
-	if elapsed_seconds % 5 == 0:
+	if elapsed_seconds % 120 == 0:
 		spawn_shop()
 		
 	if elapsed_seconds == 600: 
