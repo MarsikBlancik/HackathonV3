@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://blvoq1x425oqq" path="res://restart.gd" id="1_w6t3f"]
 [ext_resource type="Texture2D" uid="uid://q1etn5xvgg3h" path="res://Menus/ButtonMenu.png" id="2_cpnad"]
+[ext_resource type="FontFile" uid="uid://dtnr2nvfn5prx" path="res://shlop rg.otf" id="3_io7n2"]
 [ext_resource type="Texture2D" uid="uid://cj0q6hdsc8pi1" path="res://Menus/Gemini_Generated_Image_5v2adc5v2adc5v2a.png" id="3_isvg7"]
 
 [sub_resource type="Theme" id="Theme_w6t3f"]
@@ -78,6 +79,8 @@ size_flags_horizontal = 4
 size_flags_vertical = 10
 size_flags_stretch_ratio = 3.0
 theme = SubResource("Theme_w6t3f")
+theme_override_fonts/font = ExtResource("3_io7n2")
+theme_override_font_sizes/font_size = 69
 theme_override_styles/normal = SubResource("StyleBoxTexture_isvg7")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_io7n2")
 theme_override_styles/hover = SubResource("StyleBoxTexture_3olhq")
@@ -92,6 +95,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
 theme = SubResource("Theme_w6t3f")
+theme_override_fonts/font = ExtResource("3_io7n2")
+theme_override_font_sizes/font_size = 69
 theme_override_styles/normal = SubResource("StyleBoxTexture_cpnad")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_0krwp")
 theme_override_styles/hover = SubResource("StyleBoxTexture_b3446")
