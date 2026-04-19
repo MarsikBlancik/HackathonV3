@@ -2,10 +2,31 @@
 
 [ext_resource type="Script" uid="uid://dwsje81uvyhsg" path="res://main_scene.gd" id="1_rpqi1"]
 [ext_resource type="PackedScene" uid="uid://cl25grr7o014x" path="res://placeholderobiekt.tscn" id="1_x4av3"]
+<<<<<<< Updated upstream:MainScene.tscn
 [ext_resource type="PackedScene" uid="uid://dff7ow4nfmpvf" path="res://XP_Gem.tscn" id="2_a814b"]
 [ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player.tscn" id="2_rpqi1"]
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://EnemySpawner.tscn" id="6_a814b"]
+=======
+[ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player/Player.tscn" id="2_rpqi1"]
+[ext_resource type="Texture2D" uid="uid://i5u55o8vaodf" path="res://fillbar.png" id="5_6tdih"]
+[ext_resource type="Texture2D" uid="uid://ctp0f1wgpev8h" path="res://energyfillbar.png" id="5_j30su"]
+[ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
+[ext_resource type="Texture2D" uid="uid://71tquvgugxa7" path="res://EnergyBar.png" id="6_4rc7o"]
+[ext_resource type="PackedScene" uid="uid://dsiigcnxays1n" path="res://Menus/pause_menu.tscn" id="6_5crlr"]
+[ext_resource type="Texture2D" uid="uid://di6iht3aihoag" path="res://HpBar.png" id="6_66t8v"]
+[ext_resource type="PackedScene" uid="uid://bcgyhgfn7xice" path="res://Enemies/EnemySpawner.tscn" id="6_a814b"]
+[ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
+[ext_resource type="Script" uid="uid://cyug050o7l8ci" path="res://MainScene/minimap.gd" id="8_wvmfo"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_80vrr"]
+texture = ExtResource("5_j30su")
+modulate_color = Color(0, 3.3975437, 0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_gmwbw"]
+texture = ExtResource("5_6tdih")
+axis_stretch_horizontal = 2
+>>>>>>> Stashed changes:MainScene/MainScene.tscn
 
 [sub_resource type="LabelSettings" id="LabelSettings_a814b"]
 
@@ -21,39 +42,110 @@ xp_gem_scene = ExtResource("2_a814b")
 [node name="UI" type="CanvasLayer" parent="." unique_id=1183974505]
 script = ExtResource("5_rf2cd")
 
-[node name="HPBar" type="ProgressBar" parent="UI" unique_id=1024670690]
-offset_left = 35.0
-offset_top = 89.0
-offset_right = 119.0
-offset_bottom = 179.0
-max_value = 3.0
-step = 1.0
-value = 3.0
-
 [node name="EnergyBar" type="ProgressBar" parent="UI" unique_id=2052450923]
-offset_left = 158.0
-offset_top = 20.0
-offset_right = 253.0
-offset_bottom = 91.0
+offset_left = 38.0
+offset_top = 971.0
+offset_right = 244.0
+offset_bottom = 998.0
+theme_override_styles/fill = SubResource("StyleBoxTexture_80vrr")
 max_value = 3.0
 step = 1.0
 value = 3.0
 show_percentage = false
 
+[node name="Sprite2D" type="Sprite2D" parent="UI/EnergyBar" unique_id=1388931204]
+position = Vector2(31, 13)
+scale = Vector2(0.2, 0.2)
+skew = 0.286234
+texture = ExtResource("6_4rc7o")
+
+[node name="Sprite2D2" type="Sprite2D" parent="UI/EnergyBar" unique_id=2073180940]
+position = Vector2(103, 13)
+scale = Vector2(0.2, 0.2)
+skew = 0.286234
+texture = ExtResource("6_4rc7o")
+
+[node name="Sprite2D4" type="Sprite2D" parent="UI/EnergyBar" unique_id=2146861863]
+position = Vector2(171.99998, 13)
+scale = Vector2(0.2, 0.2)
+skew = 0.286234
+texture = ExtResource("6_4rc7o")
+
+[node name="HPBar" type="ProgressBar" parent="UI" unique_id=1024670690]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 33.0
+offset_top = -54.0
+offset_right = 307.0
+offset_bottom = -22.0
+grow_vertical = 0
+theme_override_styles/fill = SubResource("StyleBoxTexture_gmwbw")
+max_value = 3.0
+step = 1.0
+value = 3.0
+show_percentage = false
+
+[node name="Sprite2D" type="Sprite2D" parent="UI/HPBar" unique_id=56779442]
+position = Vector2(-5, -10.999996)
+scale = Vector2(0.23989876, 0.20188677)
+skew = 0.286234
+texture = ExtResource("6_66t8v")
+centered = false
+
 [node name="XPBar" type="ProgressBar" parent="UI" unique_id=232814027]
-offset_left = 56.0
-offset_top = 994.0
-offset_right = 1856.0
-offset_bottom = 1013.0
+offset_left = 28.0
+offset_top = 36.0
+offset_right = 1828.0
+offset_bottom = 63.0
 size_flags_vertical = 8
 
 [node name="LevelLabel" type="Label" parent="UI/XPBar" unique_id=796250840]
 layout_mode = 0
-offset_left = 860.0
-offset_top = -29.0
-offset_right = 992.0
-offset_bottom = -6.0
+offset_left = 865.0
+offset_top = 35.0
+offset_right = 997.0
+offset_bottom = 58.0
 text = "Poziom 1"
 label_settings = SubResource("LabelSettings_a814b")
 
+<<<<<<< Updated upstream:MainScene.tscn
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
+=======
+[node name="PauseMenu" parent="UI" unique_id=54559525 instance=ExtResource("6_5crlr")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+metadata/_edit_use_anchors_ = true
+
+[node name="CoinLabel" type="Label" parent="UI" unique_id=1352267754]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -182.0
+offset_bottom = 62.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Minimap" type="Control" parent="UI" unique_id=1380927648]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 112.0
+offset_bottom = 112.0
+size_flags_horizontal = 0
+script = ExtResource("8_wvmfo")
+
+[node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=914282549]
+offset_left = -69608.0
+offset_top = -61353.0
+offset_right = 61783.0
+offset_bottom = 42694.313
+texture = ExtResource("7_431t1")
+stretch_mode = 1
+>>>>>>> Stashed changes:MainScene/MainScene.tscn

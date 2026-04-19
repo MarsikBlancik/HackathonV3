@@ -26,6 +26,7 @@ project/assembly_name="bullethell"
 [global_group]
 
 Player=""
+XP=""
 
 [input]
 
