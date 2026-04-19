@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cl25grr7o014x" path="res://placeholderobiekt.tscn" id="1_x4av3"]
 [ext_resource type="PackedScene" uid="uid://1e6mg1xkvepy" path="res://Shop/Shop.tscn" id="2_gmwbw"]
 [ext_resource type="PackedScene" uid="uid://conxxkjs4hhsj" path="res://Player/Player.tscn" id="2_rpqi1"]
+[ext_resource type="PackedScene" uid="uid://dnu7cfcus62sc" path="res://Enemies/Boss/boss.tscn" id="3_6tdih"]
 [ext_resource type="Script" uid="uid://cvr2kjn7j6b8f" path="res://ui.gd" id="5_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://dsiigcnxays1n" path="res://Menus/pause_menu.tscn" id="6_5crlr"]
 [ext_resource type="PackedScene" uid="uid://cbko0hhof8aom" path="res://LevelUpMenu.tscn" id="6_431t1"]
@@ -16,6 +17,7 @@
 z_index = 1002
 script = ExtResource("1_mmud7")
 shop_scene = ExtResource("2_gmwbw")
+boss_scene = ExtResource("3_6tdih")
 
 [node name="Node2D" parent="." unique_id=1689513127 instance=ExtResource("1_x4av3")]
 
