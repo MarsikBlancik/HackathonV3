@@ -1,13 +1,15 @@
 extends Control
 
 func _ready() -> void:
-	hide()
+	hide() # Ukrywa całe menu (w tym ColorRect i przyciski) na starcie
 	
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	var btnContinue = $VBoxContainer/Continue
 	var btnMainMenu = $VBoxContainer/MainMenu
 	
+	# Dobra praktyka: sprawdzanie czy sygnały nie są już podłączone, 
+	# choć w _ready zazwyczaj nie jest to konieczne, chyba że sceneria jest resetowana.
 	btnContinue.pressed.connect(_continue_pressed)
 	btnMainMenu.pressed.connect(_main_menu_pressed)
 
@@ -31,22 +33,26 @@ func _input(_event):
 					return # Przerywa kod, menu się nie otwiera
 		# ------------------------------------------------------------------
 		
-		_on_pause_pressed()
+		_toggle_pause() # Zmieniono nazwę dla jasności
 
-func _on_pause_pressed():
+func _toggle_pause():
+	# is_visible_in_tree sprawdza, czy ten węzeł I jego rodzice są widoczni.
 	if is_visible_in_tree():
-		hide()
+		hide() # Ukrywa menu + zaciemnienie
 		get_tree().paused = false
 	else:
-		show()
+		show() # Pokazuje menu + zaciemnienie
 		get_tree().paused = true
 
 func _continue_pressed():
-	_on_pause_pressed()
+	_toggle_pause()
 	
 func _settings_pressed():
+	# Zakładam, że masz przycisk Settings, ale nie podłączyłeś sygnału w _ready
 	print("settings")
 	
 func _main_menu_pressed():
+	# Zawsze wyłączaj pauzę przed zmianą sceny, 
+	# inaczej nowa scena może wystartować spauzowana!
 	get_tree().paused = false
 	get_tree().change_scene_to_file("res://Menus/main_menu.tscn")

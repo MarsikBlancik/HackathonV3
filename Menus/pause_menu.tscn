@@ -54,7 +54,21 @@ size_flags_vertical = 4
 theme = SubResource("Theme_hdmo1")
 script = ExtResource("1_hdmo1")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1499001903]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=779538488]
+z_index = 4095
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -4887.0
+offset_top = -2696.0
+offset_right = 5443.667
+offset_bottom = 3115.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.61960787)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1993905623]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,7 +77,8 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Continue" type="Button" parent="VBoxContainer" unique_id=756512604]
+[node name="Continue" type="Button" parent="VBoxContainer" unique_id=1509318017]
+z_index = 4096
 custom_minimum_size = Vector2(525, 270)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -77,7 +92,8 @@ theme_override_styles/disabled = SubResource("StyleBoxTexture_iptcy")
 theme_override_styles/focus = SubResource("StyleBoxTexture_8dklf")
 text = "Kontynuuj"
 
-[node name="MainMenu" type="Button" parent="VBoxContainer" unique_id=1026666864]
+[node name="MainMenu" type="Button" parent="VBoxContainer" unique_id=498046705]
+z_index = 4096
 custom_minimum_size = Vector2(525, 270)
 layout_mode = 2
 size_flags_horizontal = 4
