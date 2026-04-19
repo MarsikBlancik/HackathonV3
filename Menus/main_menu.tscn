@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://q1etn5xvgg3h" path="res://Menus/ButtonMenu.png" id="2_p3jrs"]
 [ext_resource type="Texture2D" uid="uid://ddflmpd2qq20n" path="res://Menus/Gemini_Generated_Image_hfnm65hfnm65hfnm.png" id="3_11gta"]
 [ext_resource type="AudioStream" uid="uid://e4xv034c6aa5" path="res://Menus/Where_the_Concrete_Sleeps.mp3" id="3_cxdly"]
+[ext_resource type="FontFile" uid="uid://dtnr2nvfn5prx" path="res://shlop rg.otf" id="5_vxn86"]
 
 [sub_resource type="Theme" id="Theme_rhts7"]
 default_font_size = 42
@@ -85,6 +86,9 @@ size_flags_horizontal = 4
 size_flags_vertical = 10
 size_flags_stretch_ratio = 3.0
 theme = SubResource("Theme_06t4h")
+theme_override_constants/outline_size = 13
+theme_override_fonts/font = ExtResource("5_vxn86")
+theme_override_font_sizes/font_size = 69
 theme_override_styles/normal = SubResource("StyleBoxTexture_at0u2")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cxdly")
 theme_override_styles/hover = SubResource("StyleBoxTexture_vxn86")
@@ -98,6 +102,9 @@ custom_minimum_size = Vector2(525, 270)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
+theme_override_constants/outline_size = 13
+theme_override_fonts/font = ExtResource("5_vxn86")
+theme_override_font_sizes/font_size = 69
 theme_override_styles/normal = SubResource("StyleBoxTexture_p3jrs")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_30p73")
 theme_override_styles/hover = SubResource("StyleBoxTexture_pgq7c")

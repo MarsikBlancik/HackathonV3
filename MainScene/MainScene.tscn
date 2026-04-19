@@ -13,7 +13,10 @@
 [ext_resource type="Texture2D" uid="uid://ctjodyvhmp51n" path="res://MainScene/HpBar.png" id="6_j30su"]
 [ext_resource type="Texture2D" uid="uid://bphbyvahtv2wf" path="res://MainScene/BG.png" id="7_431t1"]
 [ext_resource type="Script" uid="uid://c03pwkosa0p0b" path="res://minimap.gd" id="8_6tdih"]
+[ext_resource type="Script" path="res://minimap.gd" id="8_6tdih"]
+[ext_resource type="FontFile" uid="uid://dtnr2nvfn5prx" path="res://shlop rg.otf" id="9_gmiik"]
 [ext_resource type="Texture2D" uid="uid://cbrjo7ih1h5vl" path="res://MainScene/fillbar.png" id="11_80vrr"]
+[ext_resource type="Texture2D" uid="uid://bd5piuc2puoy8" path="res://MainScene/Gemini_Generated_Image_moqlocmoqlocmoql.png" id="14_80vrr"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_66t8v"]
 texture = ExtResource("6_4rc7o")
@@ -76,13 +79,17 @@ offset_top = 994.0
 offset_right = 1856.0
 offset_bottom = 1013.0
 size_flags_vertical = 8
+theme_override_fonts/font = ExtResource("9_gmiik")
 
 [node name="LevelLabel" type="Label" parent="UI/XPBar" unique_id=796250840]
 layout_mode = 0
 offset_left = 860.0
-offset_top = -29.0
+offset_top = -34.0
 offset_right = 992.0
 offset_bottom = -6.0
+scale = Vector2(1.765, 1.765)
+theme_override_fonts/font = ExtResource("9_gmiik")
+theme_override_font_sizes/font_size = 33
 text = "Poziom 1"
 label_settings = SubResource("LabelSettings_a814b")
 
@@ -106,7 +113,8 @@ offset_bottom = 31.0
 grow_horizontal = 0
 grow_vertical = 2
 size_flags_vertical = 8
-theme_override_font_sizes/font_size = 24
+theme_override_fonts/font = ExtResource("9_gmiik")
+theme_override_font_sizes/font_size = 35
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -122,6 +130,7 @@ offset_left = -190.0
 offset_top = -75.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_fonts/font = ExtResource("9_gmiik")
 theme_override_font_sizes/font_size = 24
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -147,9 +156,10 @@ script = ExtResource("8_6tdih")
 [node name="EnemySpawner" parent="." unique_id=1982424048 instance=ExtResource("6_a814b")]
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=914282549]
-offset_left = -69628.0
-offset_top = -61350.0
-offset_right = 61763.0
-offset_bottom = 42697.313
-texture = ExtResource("7_431t1")
+offset_left = -83876.01
+offset_top = -39666.004
+offset_right = 241190.66
+offset_bottom = 100065.31
+scale = Vector2(0.495, 0.495)
+texture = ExtResource("14_80vrr")
 stretch_mode = 1

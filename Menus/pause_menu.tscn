@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dsiigcnxays1n"]
 
 [ext_resource type="Script" uid="uid://bev5gfh88jio" path="res://Menus/pause_menu.gd" id="1_hdmo1"]
+[ext_resource type="FontFile" uid="uid://dtnr2nvfn5prx" path="res://shlop rg.otf" id="2_2og8s"]
 [ext_resource type="Texture2D" uid="uid://q1etn5xvgg3h" path="res://Menus/ButtonMenu.png" id="2_ik086"]
 
 [sub_resource type="Theme" id="Theme_hdmo1"]
@@ -84,6 +85,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 10
 size_flags_stretch_ratio = 3.0
+theme_override_fonts/font = ExtResource("2_2og8s")
+theme_override_font_sizes/font_size = 69
 theme_override_styles/normal = SubResource("StyleBoxTexture_2og8s")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_v7yoa")
 theme_override_styles/hover = SubResource("StyleBoxTexture_rxubw")
@@ -98,6 +101,8 @@ custom_minimum_size = Vector2(525, 270)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
+theme_override_fonts/font = ExtResource("2_2og8s")
+theme_override_font_sizes/font_size = 69
 theme_override_styles/normal = SubResource("StyleBoxTexture_tqvx8")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_rd0nd")
 theme_override_styles/hover = SubResource("StyleBoxTexture_m31fd")

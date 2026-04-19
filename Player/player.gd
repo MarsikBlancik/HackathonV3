@@ -31,7 +31,7 @@ var crit_multiplier: float = 2.0 # Krytyk zadaje 2x obrażeń na start
 # --- SYSTEM XP ---
 var level: int = 1
 var current_xp: int = 0
-var xp_to_next_level: int = 5 
+var xp_to_next_level: int = 15 
 
 var current_hp: int
 var current_energy: int
